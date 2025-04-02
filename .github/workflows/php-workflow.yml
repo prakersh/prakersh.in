@@ -1,0 +1,107 @@
+name: PHP Portfolio CI/CD
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, intl, zip
+        tools: composer:v2
+        coverage: xdebug
+    
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict || true
+    
+    - name: Check PHP syntax errors
+      run: find . -name "*.php" -not -path "./vendor/*" -exec php -l {} \;
+    
+    - name: PHP Code Sniffer
+      run: |
+        composer require --dev squizlabs/php_codesniffer || true
+        ./vendor/bin/phpcs -n --standard=PSR12 --extensions=php --ignore=vendor/ . || true
+    
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Lint CSS
+      uses: actions-hub/stylelint@master
+      with:
+        files: css/*.css
+        config: .stylelintrc || true
+    
+    - name: Lint JavaScript
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - run: npm ci || npm install || true
+    - run: npx eslint js/ || true
+    
+  integration:
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, intl, zip
+    
+    - name: Start PHP server
+      run: |
+        echo "Starting PHP server..."
+        php -S localhost:8000 &
+        echo "Waiting for server to be ready..."
+        sleep 10
+    
+    - name: Test website response
+      run: |
+        echo "Testing HTTP response..."
+        wget -q -O- http://localhost:8000/ | grep -q "PHP Portfolio" && echo "Success: Website is responding properly!" || { echo "Error: Website is not responding correctly"; exit 1; }
+        
+    - name: Test website is accessible
+      run: |
+        wget -q --spider http://localhost:8000/
+        if [ $? -eq 0 ]; then
+          echo "Website is accessible!"
+        else
+          echo "Website is not accessible!"
+          exit 1
+        fi
+    
+  build:
+    needs: [test, lint, integration]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Create build artifact
+      run: |
+        mkdir -p build
+        cp -r assets css includes js index.php build/
+        
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: website-build
+        path: build/
+        retention-days: 7 
