@@ -1,10 +1,24 @@
+<?php
+// Include the database connection to get profile data
+require_once __DIR__ . '/db_connect.php';
+$pdo = getDbConnection();
+
+// Fetch profile data
+$stmt = $pdo->prepare('SELECT * FROM profile WHERE id = 1');
+$stmt->execute();
+$profile = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Set defaults in case the database is empty
+$name = $profile ? htmlspecialchars($profile['name']) : 'Portfolio';
+$job_title = $profile ? htmlspecialchars($profile['job_title']) : 'Professional';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prakersh's Portfolio - Software Engineer</title>
-    <meta name="description" content="Portfolio of Prakersh Maheshwari, Software Engineer specializing in automation, system administration, and Python development.">
+    <title><?php echo $name; ?>'s Portfolio - <?php echo $job_title; ?></title>
+    <meta name="description" content="Portfolio of <?php echo $name; ?>, <?php echo $job_title; ?>.">
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
@@ -30,7 +44,7 @@
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-dark">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="#">Prakersh</a>
+                    <a class="navbar-brand" href="#"><?php echo $name; ?></a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>

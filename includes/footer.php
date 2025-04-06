@@ -1,3 +1,24 @@
+<?php
+// Include the database connection to get profile data if not already included
+if (!isset($profile)) {
+    require_once __DIR__ . '/db_connect.php';
+    $pdo = getDbConnection();
+
+    // Fetch profile data
+    $stmt = $pdo->prepare('SELECT * FROM profile WHERE id = 1');
+    $stmt->execute();
+    $profile = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// Set defaults in case the database is empty
+$name = $profile ? htmlspecialchars($profile['name']) : 'Portfolio';
+$email = $profile ? htmlspecialchars($profile['email']) : '';
+$phone = $profile ? htmlspecialchars($profile['phone']) : '';
+$location = $profile ? htmlspecialchars($profile['location']) : '';
+$website = $profile ? htmlspecialchars($profile['website']) : '';
+$linkedin = $profile ? htmlspecialchars($profile['linkedin']) : '';
+$github = $profile ? htmlspecialchars($profile['github']) : '';
+?>
     <footer class="py-5 mt-5 d-print-none">
         <div class="container">
             <div class="row">
@@ -6,19 +27,19 @@
                     <div class="footer-contact">
                         <div class="footer-contact-item">
                             <i class="fas fa-envelope"></i>
-                            <a href="mailto:prakersh@live.com">prakersh@live.com</a>
+                            <a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a>
                         </div>
                         <div class="footer-contact-item">
                             <i class="fas fa-phone"></i>
-                            <a href="tel:+919993556000">+91 9993556000</a>
+                            <a href="tel:<?php echo str_replace(' ', '', $phone); ?>"><?php echo $phone; ?></a>
                         </div>
                         <div class="footer-contact-item">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>Pune, India</span>
+                            <span><?php echo $location; ?></span>
                         </div>
                         <div class="footer-contact-item">
                             <i class="fas fa-globe"></i>
-                            <a href="https://prakersh.in" target="_blank">prakersh.in</a>
+                            <a href="https://<?php echo $website; ?>" target="_blank"><?php echo $website; ?></a>
                         </div>
                     </div>
                 </div>
@@ -62,16 +83,13 @@
                 <div class="col-md-4">
                     <h4 class="footer-heading">Connect With Me</h4>
                     <div class="social-links d-flex gap-3 mb-4">
-                        <a href="https://linkedin.com/in/prakersh" target="_blank" class="social-link">
+                        <a href="https://<?php echo $linkedin; ?>" target="_blank" class="social-link">
                             <i class="fab fa-linkedin-in fa-lg"></i>
                         </a>
-                        <a href="https://github.com/prakersh" target="_blank" class="social-link">
+                        <a href="https://<?php echo $github; ?>" target="_blank" class="social-link">
                             <i class="fab fa-github fa-lg"></i>
                         </a>
-                        <a href="https://twitter.com/prakersh" target="_blank" class="social-link">
-                            <i class="fab fa-twitter fa-lg"></i>
-                        </a>
-                        <a href="mailto:prakersh@live.com" class="social-link">
+                        <a href="mailto:<?php echo $email; ?>" class="social-link">
                             <i class="fas fa-envelope fa-lg"></i>
                         </a>
                     </div>
@@ -79,7 +97,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; <?php echo date('Y'); ?> Prakersh Maheshwari. All rights reserved.</p>
+                <p>&copy; <?php echo date('Y'); ?> <?php echo $name; ?>. All rights reserved.</p>
             </div>
         </div>
     </footer>

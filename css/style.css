@@ -1,20 +1,20 @@
 /* Modern Variables */
 :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #e74c3c;
-    --text-color: #2c3e50;
-    --light-bg: #f8f9fa;
-    --dark-bg: #2c3e50;
+    --primary-color: #E17055;
+    --secondary-color: #FDAEA8;
+    --accent-color: #FF9F65;
+    --text-color: #592A21;
+    --light-bg: #FFF5F0;
+    --dark-bg: #E17055;
     --border-radius: 15px;
     --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     --transition-speed: 0.3s;
     --card-padding: 1.8rem;
-    --text-secondary: #6c757d;
+    --text-secondary: #8D5B4C;
     --success-color: #2ecc71;
     --warning-color: #f39c12;
     --danger-color: #e74c3c;
-    --info-color: #3498db;
+    --info-color: #FF9F65;
 }
 
 /* General Styles */
