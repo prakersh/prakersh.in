@@ -794,6 +794,7 @@ if ($is_logged_in) {
                                                         <option value="matrix" <?php echo ($current_theme == 'matrix') ? 'selected' : ''; ?>>Matrix</option>
                                                         <option value="retro" <?php echo ($current_theme == 'retro') ? 'selected' : ''; ?>>Retro Computer</option>
                                                         <option value="ubuntu" <?php echo ($current_theme == 'ubuntu') ? 'selected' : ''; ?>>Ubuntu</option>
+                                                        <option value="github" <?php echo ($current_theme == 'github') ? 'selected' : ''; ?>>GitHub</option>
                                                     </select>
                                                 </div>
                                                 
