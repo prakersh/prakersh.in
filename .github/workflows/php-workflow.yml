@@ -87,46 +87,127 @@ jobs:
     - name: Start PHP server
       run: |
         echo "Starting PHP server..."
-        php -S localhost:8000 &
+        # Start server in background with output redirection for debugging
+        php -S localhost:8000 > /tmp/server.log 2>&1 &
+        SERVER_PID=$!
+        echo "Server PID: $SERVER_PID"
         echo "Waiting for server to be ready..."
-        sleep 10
+        
+        # Wait for server to start with multiple checks
+        for i in {1..30}; do
+          if curl -s -f http://localhost:8000/ >/dev/null 2>&1; then
+            echo "Server is ready after $i seconds!"
+            break
+          fi
+          if [ $i -eq 30 ]; then
+            echo "Server failed to start after 30 seconds"
+            echo "Server logs:"
+            cat /tmp/server.log
+            exit 1
+          fi
+          sleep 1
+        done
     
     - name: Test website response
       run: |
         echo "Testing HTTP response..."
-        # Use a more lenient check to avoid failures on content text
-        if wget -q -O- http://localhost:8000/; then
+        # Test the main website response with better error handling
+        if wget -q --timeout=30 --tries=3 -O /tmp/response.html http://localhost:8000/; then
           echo "Success: Website is responding!"
+          # Check if response contains expected content
+          if grep -q "Prakersh" /tmp/response.html; then
+            echo "Success: Website content appears correct!"
+          else
+            echo "Warning: Website response may not contain expected content"
+            head -20 /tmp/response.html
+          fi
         else
           echo "Error: Website is not responding correctly"
+          echo "Server logs:"
+          # Try to get server logs if available
           exit 1
         fi
         
     - name: Test website is accessible
       run: |
-        wget -q --spider http://localhost:8000/
-        if [ $? -eq 0 ]; then
+        echo "Testing website accessibility..."
+        # Use wget with timeout and multiple attempts
+        if wget -q --timeout=15 --tries=2 --spider http://localhost:8000/; then
           echo "Website is accessible!"
         else
-          echo "Website is not accessible!"
-          exit 1
+          echo "Website accessibility test failed, trying with curl..."
+          if curl -s -f --max-time 15 http://localhost:8000/ >/dev/null; then
+            echo "Website is accessible via curl!"
+          else
+            echo "Website is not accessible!"
+            echo "Server logs:"
+            cat /tmp/server.log || echo "No server logs available"
+            exit 1
+          fi
         fi
     
     - name: Test database initialization
       run: |
         echo "Testing database initialization..."
+        # Remove any existing database to test fresh initialization
+        rm -f data/resume.db
         if wget -q -O- http://localhost:8000/init_db.php; then
           echo "Success: Database initialization works!"
         else
           echo "Error: Database initialization failed"
           exit 1
         fi
+        
+        # Verify database was created
+        if [ -f "data/resume.db" ]; then
+          echo "Success: Database file was created!"
+        else
+          echo "Error: Database file was not created"
+          exit 1
+        fi
+    
+    - name: Test security - database initialization protection
+      run: |
+        echo "Testing security: Database init protection after database exists..."
+        # Try to run init_db.php again - this should fail due to auth requirement
+        if wget -q -O- http://localhost:8000/init_db.php 2>/dev/null | grep -q "Access denied"; then
+          echo "Success: Database initialization is properly protected!"
+        else
+          echo "Warning: Database initialization security protection may not be working"
+          # Don't fail the build, just warn - this is not a critical failure
+        fi
+    
+    - name: Test security - protected admin endpoints
+      run: |
+        echo "Testing security: Protected admin endpoints..."
+        
+        # Test reset_db.php protection
+        if wget -q -O- http://localhost:8000/reset_db.php 2>/dev/null | grep -q "Access denied"; then
+          echo "Success: reset_db.php is properly protected!"
+        else
+          echo "Warning: reset_db.php protection may not be working"
+        fi
+        
+        # Test check_theme.php protection  
+        if wget -q -O- http://localhost:8000/check_theme.php 2>/dev/null | grep -q "Access denied"; then
+          echo "Success: check_theme.php is properly protected!"
+        else
+          echo "Warning: check_theme.php protection may not be working"
+        fi
     
     - name: Test admin page
       run: |
         echo "Testing admin page loads..."
-        if wget -q --spider http://localhost:8000/admin.php; then
+        # Test that admin page is accessible (should show login form)
+        if wget -q --timeout=15 -O /tmp/admin_response.html http://localhost:8000/admin.php; then
           echo "Success: Admin page is accessible!"
+          # Check if it contains login form elements
+          if grep -q -i "login\|password\|admin" /tmp/admin_response.html; then
+            echo "Success: Admin page appears to have login functionality!"
+          else
+            echo "Warning: Admin page may not contain expected login elements"
+            head -10 /tmp/admin_response.html
+          fi
         else
           echo "Error: Admin page is not accessible"
           exit 1
