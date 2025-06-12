@@ -96,7 +96,7 @@ if ($is_logged_in) {
     // Change Theme
     if (isset($_POST['change_theme'])) {
         $theme = filter_var($_POST['theme'], FILTER_SANITIZE_STRING);
-        if (in_array($theme, ['light', 'dark', 'blue', 'green'])) { // Whitelist allowed themes
+        if (in_array($theme, ['light', 'dark', 'blue', 'green', 'peach', 'neon', 'minimal', 'watercolor', 'vscode', 'matrix', 'retro', 'terminal', 'ubuntu', 'github'])) { // Whitelist allowed themes
             $stmt = $pdo->prepare('UPDATE admin_settings SET theme = ? WHERE id = 1');
             $stmt->execute([$theme]);
             $message = "Theme updated successfully!";
@@ -108,7 +108,7 @@ if ($is_logged_in) {
     // Also handle the new save_theme button name
     if (isset($_POST['save_theme'])) {
         $theme = filter_var($_POST['theme'], FILTER_SANITIZE_STRING);
-        if (in_array($theme, ['light', 'dark', 'blue', 'green'])) { // Whitelist allowed themes
+        if (in_array($theme, ['light', 'dark', 'blue', 'green', 'peach', 'neon', 'minimal', 'watercolor', 'vscode', 'matrix', 'retro', 'terminal', 'ubuntu', 'github'])) { // Whitelist allowed themes
             $stmt = $pdo->prepare('UPDATE admin_settings SET theme = ? WHERE id = 1');
             $stmt->execute([$theme]);
             $message = "Theme updated successfully!";
@@ -963,6 +963,7 @@ if ($is_logged_in) {
                                         </div>
                                         <div class="card-body">
                                             <form method="post" action="">
+                                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                                 <div class="mb-3">
                                                     <label for="theme" class="form-label">Select Theme</label>
                                                     <select class="form-select" id="theme" name="theme">
