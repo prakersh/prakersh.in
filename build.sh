@@ -13,8 +13,8 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-CONTAINER_NAME="prakersh-portfolio"
-IMAGE_NAME="prakersh-portfolio:latest"
+CONTAINER_NAME="portfolio"
+IMAGE_NAME="portfolio:latest"
 PORT="8080"
 
 # Function to print colored output

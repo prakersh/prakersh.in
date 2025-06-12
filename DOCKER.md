@@ -51,7 +51,7 @@ The `build.sh` script provides convenient commands for all Docker operations:
 ### Core Commands
 
 ```bash
-# Build the Docker image
+# Build the Docker image (takes 3-4 minutes)
 ./build.sh build
 
 # Start the application
@@ -279,7 +279,7 @@ Set up monitoring for production:
 
 ```bash
 # Monitor container stats
-docker stats prakersh-portfolio
+docker stats portfolio
 
 # Set up log rotation
 # Add to logrotate configuration
@@ -293,7 +293,7 @@ For production with SSL, add nginx reverse proxy:
 # Uncomment nginx service in docker-compose.yml
 nginx:
   image: nginx:alpine
-  container_name: prakersh-nginx
+  container_name: portfolio-nginx
   ports:
     - "80:80"
     - "443:443"
