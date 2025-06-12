@@ -604,6 +604,7 @@ if ($is_logged_in) {
                                 <div class="tab-pane fade show active" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                                     <h4 class="mb-3">Edit Profile</h4>
                                     <form method="post" action="admin.php">
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Name</label>
                                             <input type="text" class="form-control" id="name" name="profile[name]" value="<?php echo htmlspecialchars($profile['name']); ?>" required>
@@ -1046,6 +1047,7 @@ if ($is_logged_in) {
                 </div>
                 <div class="modal-body">
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <div class="mb-3">
                             <label for="exp_job_title" class="form-label">Job Title</label>
                             <input type="text" class="form-control" id="exp_job_title" name="experience[job_title]" required>
@@ -1095,6 +1097,7 @@ if ($is_logged_in) {
                 </div>
                 <div class="modal-body">
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <input type="hidden" id="edit_exp_id" name="experience[id]">
                         <div class="mb-3">
                             <label for="edit_exp_job_title" class="form-label">Job Title</label>
@@ -1146,6 +1149,7 @@ if ($is_logged_in) {
                 <div class="modal-body">
                     <p>Are you sure you want to delete the experience: <span id="delete_exp_title" class="fw-bold"></span>?</p>
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <input type="hidden" id="delete_exp_id" name="experience_id">
                         <div class="text-end">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -1168,6 +1172,7 @@ if ($is_logged_in) {
                 <div class="modal-body">
                     <p>Are you sure you want to delete the education: <span id="delete_edu_title" class="fw-bold"></span>?</p>
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <input type="hidden" id="delete_edu_id" name="education_id">
                         <div class="text-end">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -1190,6 +1195,7 @@ if ($is_logged_in) {
                 <div class="modal-body">
                     <p>Are you sure you want to delete the skill: <span id="delete_skill_title" class="fw-bold"></span>?</p>
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <input type="hidden" id="delete_skill_id" name="skill_id">
                         <div class="text-end">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -1212,6 +1218,7 @@ if ($is_logged_in) {
                 <div class="modal-body">
                     <p>Are you sure you want to delete the achievement: <span id="delete_achievement_title" class="fw-bold"></span>?</p>
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <input type="hidden" id="delete_achievement_id" name="achievement_id">
                         <div class="text-end">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -1234,6 +1241,7 @@ if ($is_logged_in) {
                 <div class="modal-body">
                     <p>Are you sure you want to delete the project: <span id="delete_project_title" class="fw-bold"></span>?</p>
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <input type="hidden" id="delete_project_id" name="project_id">
                         <div class="text-end">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -1255,6 +1263,7 @@ if ($is_logged_in) {
                 </div>
                 <div class="modal-body">
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <div class="mb-3">
                             <label for="edu_degree" class="form-label">Degree</label>
                             <input type="text" class="form-control" id="edu_degree" name="education[degree]" required>
@@ -1304,6 +1313,7 @@ if ($is_logged_in) {
                 </div>
                 <div class="modal-body">
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <input type="hidden" id="edit_edu_id" name="education[id]">
                         <div class="mb-3">
                             <label for="edit_edu_degree" class="form-label">Degree</label>
@@ -1354,6 +1364,7 @@ if ($is_logged_in) {
                 </div>
                 <div class="modal-body">
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <div class="mb-3">
                             <label for="skill_category" class="form-label">Category</label>
                             <input type="text" class="form-control" id="skill_category" name="skill[category]" required>
@@ -1386,6 +1397,7 @@ if ($is_logged_in) {
                 </div>
                 <div class="modal-body">
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <input type="hidden" id="edit_skill_id" name="skill[id]">
                         <div class="mb-3">
                             <label for="edit_skill_category" class="form-label">Category</label>
@@ -1419,6 +1431,7 @@ if ($is_logged_in) {
                 </div>
                 <div class="modal-body">
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <div class="mb-3">
                             <label for="achievement_title" class="form-label">Title</label>
                             <input type="text" class="form-control" id="achievement_title" name="achievement[title]" required>
@@ -1451,6 +1464,7 @@ if ($is_logged_in) {
                 </div>
                 <div class="modal-body">
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <input type="hidden" id="edit_achievement_id" name="achievement[id]">
                         <div class="mb-3">
                             <label for="edit_achievement_title" class="form-label">Title</label>
@@ -1484,6 +1498,7 @@ if ($is_logged_in) {
                 </div>
                 <div class="modal-body">
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <div class="mb-3">
                             <label for="project_title" class="form-label">Title</label>
                             <input type="text" class="form-control" id="project_title" name="project[title]" required>
@@ -1529,6 +1544,7 @@ if ($is_logged_in) {
                 </div>
                 <div class="modal-body">
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <input type="hidden" id="edit_project_id" name="project[id]">
                         <div class="mb-3">
                             <label for="edit_project_title" class="form-label">Title</label>
@@ -1574,6 +1590,7 @@ if ($is_logged_in) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" action="admin.php">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="title" class="form-label">Title</label>
@@ -1621,6 +1638,7 @@ if ($is_logged_in) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" action="admin.php">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <input type="hidden" name="certificate_conference[id]" id="edit_id">
                     <div class="modal-body">
                         <div class="mb-3">
@@ -1673,6 +1691,7 @@ if ($is_logged_in) {
                 </div>
                 <div class="modal-footer">
                     <form method="post" action="admin.php">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <input type="hidden" name="certificate_conference_id" id="delete_id">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" name="delete_certificate_conference" class="btn btn-danger">Delete</button>
