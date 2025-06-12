@@ -31,9 +31,9 @@ RUN echo "expose_php = Off" >> /usr/local/etc/php/conf.d/security.ini
 # Expose port 80
 EXPOSE 80
 
-# Health check to ensure the application is working  
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD pgrep php > /dev/null || exit 1
+# Health check to ensure the application is working
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost/ || exit 1
 
 # Create an entrypoint script to fix permissions on startup and start PHP server
 RUN echo '#!/bin/bash' > /entrypoint.sh && \

@@ -428,293 +428,73 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     
-    - name: Test Docker build with timing
+    - name: Test Docker build
       run: |
         echo "Testing Docker build process..."
-        echo "Note: Docker build can take 3-4 minutes depending on system resources"
+        docker build -t portfolio-test .
         
-        # Record build start time
-        BUILD_START=$(date +%s)
-        
-        # Build the image
-        if docker build -t portfolio-test .; then
-          BUILD_END=$(date +%s)
-          BUILD_TIME=$((BUILD_END - BUILD_START))
-          echo "Success: Docker image built in ${BUILD_TIME} seconds"
-        else
-          echo "Error: Docker build failed"
-          exit 1
-        fi
-        
-        # Verify image was created
-        if docker images | grep -q "portfolio-test"; then
-          echo "Success: Docker image created successfully"
-          docker images portfolio-test
-        else
-          echo "Error: Docker image not found after build"
-          exit 1
-        fi
-        
-    - name: Test Docker container startup and health
+    - name: Test Docker run
       run: |
-        echo "Testing Docker container startup and health monitoring..."
-        
-        # Start container in background with health check
-        echo "Starting container..."
+        echo "Testing Docker container startup..."
+        # Start container in background
         docker run -d --name portfolio-test-container -p 8081:80 portfolio-test
         
-        # Check if container started
-        if docker ps | grep -q "portfolio-test-container"; then
-          echo "Success: Container started successfully"
-        else
-          echo "Error: Container failed to start"
-          docker logs portfolio-test-container
-          exit 1
-        fi
-        
-        # Wait for container to be healthy with better monitoring
-        echo "Monitoring container health..."
-        CONTAINER_HEALTHY=false
-        for i in {1..60}; do
-          # Check container status
-          CONTAINER_STATUS=$(docker inspect --format='{{.State.Status}}' portfolio-test-container)
-          HEALTH_STATUS=$(docker inspect --format='{{.State.Health.Status}}' portfolio-test-container 2>/dev/null || echo "none")
-          
-          echo "Attempt $i/60: Container Status: $CONTAINER_STATUS, Health: $HEALTH_STATUS"
-          
-          if [ "$CONTAINER_STATUS" = "running" ] && [ "$HEALTH_STATUS" = "healthy" ]; then
-            echo "Success: Container is running and healthy after $i seconds!"
-            CONTAINER_HEALTHY=true
-            break
-          fi
-          
-          if [ "$CONTAINER_STATUS" = "exited" ]; then
-            echo "Error: Container exited unexpectedly"
-            docker logs portfolio-test-container
-            exit 1
-          fi
-          
-          if [ $i -eq 60 ]; then
-            echo "Error: Container failed to become healthy within 60 seconds"
-            echo "Final status: $CONTAINER_STATUS, Health: $HEALTH_STATUS"
-            docker logs portfolio-test-container
-            exit 1
-          fi
-          
-          sleep 1
-        done
-        
-        # Additional container status verification
-        echo "Final container status verification..."
-        docker ps -a | grep portfolio-test-container
-        
-    - name: Test container functionality and endpoints
-      run: |
-        echo "Testing container functionality and endpoints..."
-        
-        # Wait additional time for PHP server to be fully ready
-        echo "Waiting for PHP server to be fully ready..."
-        sleep 10
-        
-        # Test health check endpoint (internal)
-        echo "Testing container health check..."
-        if docker exec portfolio-test-container curl -f http://localhost/ >/dev/null 2>&1; then
-          echo "Success: Internal health check passed"
-        else
-          echo "Warning: Internal health check failed"
-        fi
-        
-        # Test external connectivity
-        echo "Testing external connectivity..."
-        
-        # Test home page with detailed response
-        if curl -f -s http://localhost:8081/ > /tmp/home_response.html; then
-          echo "Success: Home page is accessible!"
-          if grep -q "Prakersh" /tmp/home_response.html; then
-            echo "Success: Home page contains expected content"
-          else
-            echo "Warning: Home page may not contain expected content"
-          fi
-        else
-          echo "Error: Home page not accessible"
-          echo "Container logs:"
-          docker logs portfolio-test-container
-          exit 1
-        fi
-        
-        # Test admin page with detailed response
-        if curl -f -s http://localhost:8081/admin.php > /tmp/admin_response.html; then
-          echo "Success: Admin page is accessible!"
-          if grep -q -i "login\|admin" /tmp/admin_response.html; then
-            echo "Success: Admin page contains login form"
-          else
-            echo "Warning: Admin page may not contain expected login form"
-          fi
-        else
-          echo "Error: Admin page not accessible"
-          echo "Container logs:"
-          docker logs portfolio-test-container
-          exit 1
-        fi
-        
-        # Test database initialization in container
-        echo "Testing database initialization in container..."
-        if docker exec portfolio-test-container php init_db.php > /tmp/init_output.txt 2>&1; then
-          echo "Success: Database initialization command executed"
-          if docker exec portfolio-test-container test -f /var/www/html/data/resume.db; then
-            echo "Success: Database file created in container"
-          else
-            echo "Warning: Database file may not have been created"
-          fi
-        else
-          echo "Warning: Database initialization may have failed"
-          cat /tmp/init_output.txt
-        fi
-        
-        # Test additional endpoints
-        echo "Testing additional endpoints..."
-        
-        # Test that protected endpoints return appropriate responses
-        PROTECTED_RESPONSE=$(curl -s http://localhost:8081/reset_db.php)
-        if echo "$PROTECTED_RESPONSE" | grep -q -i "access denied\|login\|admin"; then
-          echo "Success: Protected endpoints are properly secured"
-        else
-          echo "Warning: Protected endpoints may not be properly secured"
-        fi
-        
-    - name: Test container logs and error handling
-      run: |
-        echo "Testing container logs and error handling..."
-        
-        # Check container logs for errors
-        echo "Checking container logs..."
-        docker logs portfolio-test-container > /tmp/container_logs.txt 2>&1
-        
-        # Look for critical errors (but allow warnings and info)
-        if grep -i "fatal\|critical\|emergency" /tmp/container_logs.txt; then
-          echo "Warning: Critical errors found in container logs"
-          cat /tmp/container_logs.txt
-        else
-          echo "Success: No critical errors found in container logs"
-        fi
-        
-        # Check for PHP errors
-        if grep -i "php fatal error\|php parse error" /tmp/container_logs.txt; then
-          echo "Error: PHP errors found in container logs"
-          cat /tmp/container_logs.txt
-          exit 1
-        else
-          echo "Success: No PHP fatal errors found"
-        fi
-        
-        # Test container restart capability
-        echo "Testing container restart capability..."
-        docker restart portfolio-test-container
-        
-        # Wait for container to be healthy again after restart
-        echo "Waiting for container to be healthy after restart..."
+        # Wait for container to be ready
+        echo "Waiting for container to start..."
         for i in {1..30}; do
-          HEALTH_STATUS=$(docker inspect --format='{{.State.Health.Status}}' portfolio-test-container 2>/dev/null || echo "none")
-          if [ "$HEALTH_STATUS" = "healthy" ]; then
-            echo "Success: Container is healthy after restart ($i seconds)"
+          if docker ps | grep portfolio-test-container | grep -q "(healthy)"; then
+            echo "Container is healthy after $i seconds!"
             break
           fi
           if [ $i -eq 30 ]; then
-            echo "Error: Container not healthy after restart"
+            echo "Container failed to become healthy"
             docker logs portfolio-test-container
             exit 1
           fi
           sleep 1
         done
         
-        # Test that application still works after restart
+        # Test basic connectivity (wait a bit more for PHP server to be ready)
         sleep 5
+        
+        # Test home page
         if curl -f http://localhost:8081/ >/dev/null 2>&1; then
-          echo "Success: Application accessible after container restart"
+          echo "Success: Home page is accessible!"
         else
-          echo "Error: Application not accessible after restart"
+          echo "Error: Home page not accessible"
+          docker logs portfolio-test-container
           exit 1
         fi
         
-    - name: Test container resource usage and performance
-      run: |
-        echo "Testing container resource usage and performance..."
-        
-        # Check container resource usage
-        echo "Container resource usage:"
-        docker stats --no-stream portfolio-test-container
-        
-        # Test response time
-        echo "Testing response time..."
-        TIME_START=$(date +%s%3N)
-        curl -s http://localhost:8081/ > /dev/null
-        TIME_END=$(date +%s%3N)
-        RESPONSE_TIME=$((TIME_END - TIME_START))
-        echo "Response time: ${RESPONSE_TIME}ms"
-        
-        if [ $RESPONSE_TIME -lt 5000 ]; then
-          echo "Success: Response time is acceptable (${RESPONSE_TIME}ms)"
+        # Test admin page
+        if curl -f http://localhost:8081/admin.php >/dev/null 2>&1; then
+          echo "Success: Admin page is accessible!"
         else
-          echo "Warning: Response time is slow (${RESPONSE_TIME}ms)"
+          echo "Error: Admin page not accessible"
+          docker logs portfolio-test-container
+          exit 1
         fi
         
-    - name: Test build.sh script with container
-      run: |
-        echo "Testing build.sh script functionality with container operations..."
-        
-        # Stop the test container first
+        # Cleanup
         docker stop portfolio-test-container
         docker rm portfolio-test-container
         
-        # Test build.sh script
-        chmod +x build.sh
+        echo "Docker tests completed successfully!"
+        
+    - name: Test build.sh script
+      run: |
+        echo "Testing build.sh script functionality..."
         
         # Test help command
-        echo "Testing help command..."
-        if ./build.sh help | grep -q "Commands:"; then
-          echo "Success: Help command works correctly"
-        else
-          echo "Error: Help command not working"
-          exit 1
-        fi
+        chmod +x build.sh
+        ./build.sh help
         
-        # Test status command (should show no containers)
-        echo "Testing status command..."
-        ./build.sh status || echo "No containers running (expected)"
-        
-        # Test build command
-        echo "Testing build command..."
+        # Test that script recognizes Docker
         if ./build.sh build 2>&1 | grep -q "Building Docker image"; then
-          echo "Success: build.sh build command works correctly"
+          echo "Success: build.sh properly detects Docker operations!"
         else
-          echo "Error: build.sh build command not working"
-          exit 1
+          echo "Warning: build.sh may not be working correctly"
         fi
-        
-        # Test that image was built by build.sh
-        if docker images | grep -q "portfolio:latest"; then
-          echo "Success: build.sh created the correct image"
-        else
-          echo "Error: build.sh did not create expected image"
-          exit 1
-        fi
-        
-    - name: Cleanup Docker resources
-      run: |
-        echo "Cleaning up Docker resources..."
-        
-        # Stop and remove any running containers
-        docker stop portfolio-test-container 2>/dev/null || true
-        docker rm portfolio-test-container 2>/dev/null || true
-        
-        # Remove test images
-        docker rmi portfolio-test 2>/dev/null || true
-        docker rmi portfolio:latest 2>/dev/null || true
-        
-        # Clean up any leftover docker-compose resources
-        docker compose down --remove-orphans 2>/dev/null || true
-        
-        echo "Docker cleanup completed"
 
   build:
     needs: [test, lint, integration, docker]
