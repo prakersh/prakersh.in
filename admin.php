@@ -25,7 +25,29 @@ if (isset($_POST['login'])) {
     $stmt->execute([$_POST['username']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if ($user && password_verify($_POST['password'], $user['password'])) {
+    // Backward compatible authentication - supports both plain text (for migration) and hashed passwords
+    $passwordValid = false;
+    
+    if ($user) {
+        // Check if password is hashed (bcrypt hashes start with $2y$)
+        if (password_get_info($user['password'])['algo']) {
+            // Password is hashed, use password_verify
+            $passwordValid = password_verify($_POST['password'], $user['password']);
+        } else {
+            // Password is plain text (legacy), use direct comparison
+            $passwordValid = ($_POST['password'] === $user['password']);
+            
+            // Auto-migrate plain text password to hashed version on successful login
+            if ($passwordValid) {
+                $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                $updateStmt = $pdo->prepare('UPDATE admin_settings SET password = ? WHERE id = ?');
+                $updateStmt->execute([$hashedPassword, $user['id']]);
+                error_log("Auto-migrated plain text password to hashed format for user: " . $user['username']);
+            }
+        }
+    }
+    
+    if ($passwordValid) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_username'] = $user['username'];
         $_SESSION['last_activity'] = time(); // Add session timeout tracking
@@ -101,7 +123,17 @@ if ($is_logged_in) {
         $stmt->execute();
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if (password_verify($_POST['current_password'], $admin['password'])) {
+        // Backward compatible current password verification
+        $currentPasswordValid = false;
+        if (password_get_info($admin['password'])['algo']) {
+            // Password is hashed, use password_verify
+            $currentPasswordValid = password_verify($_POST['current_password'], $admin['password']);
+        } else {
+            // Password is plain text (legacy), use direct comparison
+            $currentPasswordValid = ($_POST['current_password'] === $admin['password']);
+        }
+        
+        if ($currentPasswordValid) {
             if ($_POST['new_password'] == $_POST['confirm_password']) {
                 if (strlen($_POST['new_password']) >= 8) { // Increased minimum length
                     // Hash the new password
