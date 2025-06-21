@@ -117,5 +117,5 @@ if (!isset($skillsByCategory)) {
             </div>
         </div>
     </div>
-</section> 
+</section>
 </section> 
