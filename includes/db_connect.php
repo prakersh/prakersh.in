@@ -121,4 +121,3 @@ function populateDefaultData($pdo) {
     include_once __DIR__ . '/populate_db.php';
     populateDatabase($pdo);
 }
-?> 

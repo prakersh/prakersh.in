@@ -210,4 +210,3 @@ function populateDatabase($pdo) {
         $stmt->execute($project);
     }
 }
-?> 

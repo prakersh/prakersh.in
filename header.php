@@ -18,4 +18,4 @@
     
     // Load theme CSS
     echo '<link rel="stylesheet" href="css/theme-' . $theme . '.css">';
-    ?> 
+    ?>
