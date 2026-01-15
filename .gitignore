@@ -52,4 +52,28 @@ wget-log
 data/
 *.db
 *.sqlite
-*.sqlite3 
+*.sqlite3
+
+# Download logs
+wget-log*
+job-logs.txt
+
+# Development plans and temporary documentation
+plan.md
+MIGRATION_GUIDE.md
+SECURITY_IMPROVEMENTS.md
+fix_missing_table.php
+header.php
+
+# Temporary utility files
+*.tmp
+*.bak
+*~
+
+# IDE workspace files
+*.sublime-workspace
+*.sublime-project
+
+# Test files
+test_*.php
+*.test.php 
