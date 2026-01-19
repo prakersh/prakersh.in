@@ -220,6 +220,32 @@ ul, ol {
     }
 }
 
+/* Main content wrapper */
+.zen-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding: var(--space-md) 0;
+}
+
+@media (min-width: 768px) {
+    .zen-content {
+        padding: var(--space-lg) 0;
+    }
+}
+
+/* Section wrapper - full width children */
+.bento-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    width: 100%;
+}
+
+.bento-section > .bento-card {
+    width: 100%;
+}
+
 .bento-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -646,6 +672,8 @@ ul, ol {
     color: var(--text-secondary);
     line-height: var(--leading-relaxed);
     margin: 0;
+    max-width: none; /* Override default p max-width */
+    width: 100%;
 }
 
 .profile-hero__contact {
