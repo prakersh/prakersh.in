@@ -9,20 +9,18 @@ $stmt->execute();
 $profile = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Include the header file
-include 'includes/header.php'; 
+include 'includes/header.php';
 ?>
 
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-10 offset-md-1">
-            <?php include 'includes/profile.php'; ?>
-            <?php include 'includes/experience.php'; ?>
-            <?php include 'includes/education.php'; ?>
-            <?php include 'includes/skills.php'; ?>
-            <?php include 'includes/achievements.php'; ?>
-            <?php include 'includes/projects.php'; ?>
-        </div>
+<div class="zen-container">
+    <div class="zen-content">
+        <?php include 'includes/profile.php'; ?>
+        <?php include 'includes/experience.php'; ?>
+        <?php include 'includes/education.php'; ?>
+        <?php include 'includes/skills.php'; ?>
+        <?php include 'includes/projects.php'; ?>
+        <?php include 'includes/achievements.php'; ?>
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?> 
+<?php include 'includes/footer.php'; ?>

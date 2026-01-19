@@ -3,89 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title><?php echo htmlspecialchars($profile['name']); ?> - <?php echo htmlspecialchars($profile['job_title']); ?></title>
     <meta name="description" content="Portfolio of <?php echo htmlspecialchars($profile['name']); ?>, <?php echo htmlspecialchars($profile['job_title']); ?> - <?php echo htmlspecialchars(substr($profile['summary'], 0, 150)); ?>...">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Google Fonts - Instrument Sans + Source Sans 3 -->
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <!-- Base CSS -->
     <link rel="stylesheet" href="css/style.css">
-    
+
     <?php
     // Get current theme from database
     try {
         $stmt = $pdo->prepare('SELECT theme FROM admin_settings WHERE id = 1');
         $stmt->execute();
         $theme = $stmt->fetchColumn();
-        
-        // Load theme-specific CSS if not the default light theme
-        if ($theme && $theme !== 'light') {
-            echo '<link rel="stylesheet" href="css/theme-' . htmlspecialchars($theme) . '.css">';
+
+        // Only load theme CSS if not light (light is default in style.css)
+        if ($theme && in_array($theme, ['dark', 'peach', 'blue'])) {
+            echo '<link rel="stylesheet" href="css/theme-' . htmlspecialchars($theme) . '.css" id="theme-css">';
         }
     } catch (PDOException $e) {
-        // Theme column might not exist yet, just use default theme
         $theme = 'light';
     }
     ?>
-    
+
     <!-- Print-specific CSS -->
     <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Theme initialization (prevents flash) -->
+    <script>
+        (function() {
+            const saved = localStorage.getItem('zen-theme');
+            if (saved && ['light', 'dark', 'peach', 'blue'].includes(saved)) {
+                document.documentElement.setAttribute('data-theme', saved);
+            }
+        })();
+    </script>
 </head>
 <body>
-    <header class="py-3">
-        <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-dark">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="#"><?php 
-                        // Extract first name from full name
-                        $firstName = explode(' ', $profile['name'])[0];
-                        echo htmlspecialchars($firstName); 
-                    ?></a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
+    <header class="site-header" role="banner">
+        <div class="zen-container">
+            <div class="site-header__inner">
+                <a href="#" class="site-header__brand"><?php
+                    $firstName = explode(' ', $profile['name'])[0];
+                    echo htmlspecialchars($firstName);
+                ?></a>
+
+                <nav class="site-nav" role="navigation" aria-label="Main navigation">
+                    <a href="#profile" class="site-nav__link active">About</a>
+                    <a href="#experience" class="site-nav__link">Experience</a>
+                    <a href="#education" class="site-nav__link">Education</a>
+                    <a href="#skills" class="site-nav__link">Skills</a>
+                    <a href="#projects" class="site-nav__link">Projects</a>
+                    <a href="#achievements" class="site-nav__link">Achievements</a>
+                </nav>
+
+                <div class="site-header__actions">
+                    <button class="theme-toggle d-print-none" id="theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
                     </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#profile"><i class="fas fa-user me-1"></i>Profile</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#experience"><i class="fas fa-briefcase me-1"></i>Experience</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#education"><i class="fas fa-graduation-cap me-1"></i>Education</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#skills">Skills</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#achievements"><i class="fas fa-award me-1"></i>Achievements</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#projects"><i class="fas fa-code me-1"></i>Projects</a>
-                            </li>
-                            <li class="nav-item d-none d-print-none">
-                                <button class="btn btn-print ms-2" aria-label="Print Resume"><i class="fas fa-print me-1"></i>Print</button>
-                            </li>
-                        </ul>
-                    </div>
+                    <a href="#" class="btn btn--primary btn--sm d-print-none" id="download-resume-btn">
+                        <i class="fas fa-download"></i>
+                        <span class="visually-hidden-mobile">Resume</span>
+                    </a>
+                    <button class="mobile-menu-toggle d-print-none" id="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
                 </div>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <nav class="mobile-nav" id="mobile-nav" role="navigation" aria-label="Mobile navigation">
+                <a href="#profile" class="mobile-nav__link active">About</a>
+                <a href="#experience" class="mobile-nav__link">Experience</a>
+                <a href="#education" class="mobile-nav__link">Education</a>
+                <a href="#skills" class="mobile-nav__link">Skills</a>
+                <a href="#projects" class="mobile-nav__link">Projects</a>
+                <a href="#achievements" class="mobile-nav__link">Achievements</a>
             </nav>
         </div>
     </header>
-    <main class="container my-4">
-        <!-- Main content sections will be included here -->
-    </main>
-</body>
-</html>
+
+    <main role="main">

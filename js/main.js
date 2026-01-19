@@ -1,257 +1,347 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize tooltips if Bootstrap is loaded
-    if (typeof bootstrap !== 'undefined') {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    }
-    
-    // Replace the print button functionality with enhanced version
-    const printButtons = document.querySelectorAll('button[onclick="window.print()"], .btn-print');
-    if (printButtons.length > 0) {
-        printButtons.forEach(button => {
-            // Remove the inline onclick attribute to prevent double execution
-            button.removeAttribute('onclick');
-            
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                handlePrint();
-            });
-        });
-    }
-    
-    // Add PDF download functionality
-    const downloadButton = document.getElementById('download-resume-btn');
-    if (downloadButton) {
-        downloadButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            generatePDF();
-        });
-    }
-    
-    function generatePDF() {
-        // Show loading indicator
-        const loadingMsg = document.createElement('div');
-        loadingMsg.className = 'print-message';
-        loadingMsg.innerHTML = '<p>Generating PDF, please wait...</p>';
-        loadingMsg.style.position = 'fixed';
-        loadingMsg.style.top = '0';
-        loadingMsg.style.left = '0';
-        loadingMsg.style.width = '100%';
-        loadingMsg.style.padding = '10px';
-        loadingMsg.style.backgroundColor = '#007bff';
-        loadingMsg.style.color = '#fff';
-        loadingMsg.style.textAlign = 'center';
-        loadingMsg.style.zIndex = '9999';
-        loadingMsg.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
-        document.body.appendChild(loadingMsg);
-        
-        // Generate a timestamp to prevent caching
-        const timestamp = new Date().getTime();
-        
-        // Redirect to the PDF generation script
-        window.location.href = `generate-pdf-wk.php?t=${timestamp}`;
-        
-        // Remove the loading message after a delay
-        setTimeout(() => {
-            if (document.body.contains(loadingMsg)) {
-                document.body.removeChild(loadingMsg);
-            }
-        }, 3000);
-    }
-    
-    function handlePrint() {
-        // Add a class to body for print preparation
-        document.body.classList.add('preparing-for-print');
-        
-        // Make sure all sections are visible
-        const allSections = document.querySelectorAll('section');
-        allSections.forEach(section => {
-            section.classList.add('print-visible');
-            
-            // Ensure all cards within this section are visible
-            const cards = section.querySelectorAll('.card');
-            cards.forEach(card => {
-                card.classList.add('print-visible');
-            });
-        });
-        
-        // Optional: Show a print preparation message
-        const printMsg = document.createElement('div');
-        printMsg.className = 'print-message';
-        printMsg.innerHTML = '<p>Preparing document for printing...</p>';
-        printMsg.style.position = 'fixed';
-        printMsg.style.top = '0';
-        printMsg.style.left = '0';
-        printMsg.style.width = '100%';
-        printMsg.style.padding = '10px';
-        printMsg.style.backgroundColor = '#f8f9fa';
-        printMsg.style.textAlign = 'center';
-        printMsg.style.zIndex = '9999';
-        printMsg.style.borderBottom = '1px solid #dee2e6';
-        document.body.appendChild(printMsg);
-        
-        // Allow time for styles to apply and resources to load
-        setTimeout(() => {
-            // Remove the message before printing
-            document.body.removeChild(printMsg);
-            
-            // Execute print
-            window.print();
-            
-            // Remove preparing class after printing dialog is closed
-            setTimeout(() => {
-                document.body.classList.remove('preparing-for-print');
-                
-                // Reset any temporary classes we added
-                allSections.forEach(section => {
-                    section.classList.remove('print-visible');
-                });
-            }, 1000);
-        }, 300);
-    }
-    
-    // Listen for the beforeprint and afterprint events
-    window.addEventListener('beforeprint', () => {
-        document.body.classList.add('is-printing');
-    });
-    
-    window.addEventListener('afterprint', () => {
-        document.body.classList.remove('is-printing');
-    });
-    
-    // Smooth scrolling for all links with header offset adjustment
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-            
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                // Get header height to use as offset
-                const headerHeight = document.querySelector('header').offsetHeight;
-                
-                // Get the element's position relative to the viewport
-                const elementPosition = targetElement.getBoundingClientRect().top;
-                
-                // Get the current scroll position
-                const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
-                
-                // Scroll to the element with offset
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
-                
-                // Close the navbar collapse if it's open (for mobile)
-                const navbarCollapse = document.querySelector('.navbar-collapse');
-                if (navbarCollapse && navbarCollapse.classList.contains('show')) {
-                    const bsCollapse = new bootstrap.Collapse(navbarCollapse);
-                    bsCollapse.hide();
-                }
-            }
-        });
-    });
+/**
+ * Zen Portfolio - Main JavaScript
+ * Theme toggle, scroll animations, and interactions
+ */
 
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
+(function() {
+    'use strict';
+
+    // Theme System
+    const ThemeManager = {
+        themes: ['light', 'dark', 'peach', 'blue'],
+        currentIndex: 0,
+        storageKey: 'zen-theme',
+
+        init() {
+            // Get saved theme or default to light
+            const saved = localStorage.getItem(this.storageKey);
+            if (saved && this.themes.includes(saved)) {
+                this.currentIndex = this.themes.indexOf(saved);
+            }
+
+            // Apply initial theme
+            this.applyTheme(this.themes[this.currentIndex]);
+
+            // Bind toggle button
+            const toggleBtn = document.getElementById('theme-toggle');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => this.toggle());
+            }
+        },
+
+        toggle() {
+            this.currentIndex = (this.currentIndex + 1) % this.themes.length;
+            const newTheme = this.themes[this.currentIndex];
+            this.applyTheme(newTheme);
+            localStorage.setItem(this.storageKey, newTheme);
+        },
+
+        applyTheme(theme) {
+            // Remove existing theme CSS
+            const existingThemeCss = document.getElementById('theme-css');
+
+            // Update data-theme attribute
+            document.documentElement.setAttribute('data-theme', theme);
+
+            // Load theme CSS if not light (light is default in style.css)
+            if (theme !== 'light') {
+                if (existingThemeCss) {
+                    existingThemeCss.href = `css/theme-${theme}.css`;
+                } else {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.id = 'theme-css';
+                    link.href = `css/theme-${theme}.css`;
+                    document.head.appendChild(link);
+                }
+            } else if (existingThemeCss) {
+                existingThemeCss.remove();
+            }
+
+            // Update toggle button icon
+            this.updateIcon(theme);
+        },
+
+        updateIcon(theme) {
+            const toggleBtn = document.getElementById('theme-toggle');
+            if (!toggleBtn) return;
+
+            const icon = toggleBtn.querySelector('i');
+            if (!icon) return;
+
+            // Remove all icon classes
+            icon.className = '';
+
+            // Set icon based on theme
+            switch(theme) {
+                case 'light':
+                    icon.className = 'fas fa-moon';
+                    break;
+                case 'dark':
+                    icon.className = 'fas fa-sun';
+                    break;
+                case 'peach':
+                    icon.className = 'fas fa-leaf';
+                    break;
+                case 'blue':
+                    icon.className = 'fas fa-water';
+                    break;
+                default:
+                    icon.className = 'fas fa-adjust';
+            }
+        }
     };
 
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
+    // Mobile Navigation
+    const MobileNav = {
+        init() {
+            const toggleBtn = document.getElementById('mobile-menu-toggle');
+            const mobileNav = document.getElementById('mobile-nav');
 
-    // Observe all sections
-    document.querySelectorAll('section').forEach(section => {
-        section.classList.add('animate-on-scroll');
-        observer.observe(section);
-    });
+            if (toggleBtn && mobileNav) {
+                toggleBtn.addEventListener('click', () => {
+                    const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+                    toggleBtn.setAttribute('aria-expanded', !isExpanded);
+                    toggleBtn.classList.toggle('active');
+                    mobileNav.classList.toggle('active');
+                });
 
-    // Animate skill bars when they come into view
-    const skillObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.width = entry.target.getAttribute('aria-valuenow') + '%';
-                skillObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
-
-    document.querySelectorAll('.progress-bar').forEach(bar => {
-        bar.style.width = '0%';
-        skillObserver.observe(bar);
-    });
-
-    // Add hover effect to project cards
-    document.querySelectorAll('.project-card').forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-10px)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
-
-    // Add active state to navigation links
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('a[href^="#"]');
-    
-    window.addEventListener('scroll', () => {
-        let current = '';
-        const headerHeight = document.querySelector('header').offsetHeight;
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (pageYOffset >= (sectionTop - headerHeight - 5)) {
-                current = section.getAttribute('id');
-            }
-        });
-
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href').slice(1) === current) {
-                link.classList.add('active');
-            }
-        });
-    });
-
-    // Add typing effect to profile title
-    const title = document.querySelector('.card-title');
-    if (title) {
-        const text = title.textContent;
-        title.textContent = '';
-        let i = 0;
-        
-        function typeWriter() {
-            if (i < text.length) {
-                title.textContent += text.charAt(i);
-                i++;
-                setTimeout(typeWriter, 100);
+                // Close menu when clicking a link
+                mobileNav.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        toggleBtn.setAttribute('aria-expanded', 'false');
+                        toggleBtn.classList.remove('active');
+                        mobileNav.classList.remove('active');
+                    });
+                });
             }
         }
-        
-        typeWriter();
-    }
+    };
 
-    // Add parallax effect to header
-    window.addEventListener('scroll', () => {
-        const header = document.querySelector('header');
-        if (header) {
-            const scrolled = window.pageYOffset;
-            header.style.backgroundPositionY = scrolled * 0.5 + 'px';
+    // Scroll Animations
+    const ScrollAnimations = {
+        observer: null,
+
+        init() {
+            // Check for reduced motion preference
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                // Make all elements visible immediately
+                document.querySelectorAll('.animate-on-scroll, .bento-card').forEach(el => {
+                    el.classList.add('visible');
+                });
+                return;
+            }
+
+            // Create intersection observer
+            this.observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            this.observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                {
+                    root: null,
+                    rootMargin: '0px 0px -50px 0px',
+                    threshold: 0.1
+                }
+            );
+
+            // Observe all animatable elements (both .animate-on-scroll and .bento-card)
+            document.querySelectorAll('.animate-on-scroll, .bento-card').forEach(el => {
+                this.observer.observe(el);
+            });
         }
+    };
+
+    // Smooth Scroll
+    const SmoothScroll = {
+        init() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', (e) => {
+                    const targetId = anchor.getAttribute('href');
+                    if (targetId === '#') return;
+
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        e.preventDefault();
+
+                        const header = document.querySelector('.site-header');
+                        const headerHeight = header ? header.offsetHeight : 0;
+                        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+
+                        // Update URL without jumping
+                        history.pushState(null, null, targetId);
+                    }
+                });
+            });
+        }
+    };
+
+    // Active Navigation Highlighting
+    const NavHighlight = {
+        sections: [],
+        navLinks: [],
+
+        init() {
+            this.sections = document.querySelectorAll('section[id]');
+            this.navLinks = document.querySelectorAll('.site-nav__link, .mobile-nav__link');
+
+            if (this.sections.length && this.navLinks.length) {
+                window.addEventListener('scroll', () => this.update(), { passive: true });
+                this.update();
+            }
+        },
+
+        update() {
+            const header = document.querySelector('.site-header');
+            const headerHeight = header ? header.offsetHeight : 0;
+            const scrollPosition = window.pageYOffset + headerHeight + 100;
+
+            let currentSection = '';
+
+            this.sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            this.navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+    };
+
+    // Header Scroll Effect
+    const HeaderScroll = {
+        header: null,
+        lastScrollY: 0,
+
+        init() {
+            this.header = document.querySelector('.site-header');
+            if (this.header) {
+                window.addEventListener('scroll', () => this.onScroll(), { passive: true });
+            }
+        },
+
+        onScroll() {
+            const currentScrollY = window.pageYOffset;
+
+            if (currentScrollY > 50) {
+                this.header.classList.add('scrolled');
+            } else {
+                this.header.classList.remove('scrolled');
+            }
+
+            this.lastScrollY = currentScrollY;
+        }
+    };
+
+    // PDF Download
+    const PDFDownload = {
+        init() {
+            const downloadBtn = document.getElementById('download-resume-btn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.generate();
+                });
+            }
+        },
+
+        generate() {
+            // Show loading state
+            const btn = document.getElementById('download-resume-btn');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            // Generate timestamp to prevent caching
+            const timestamp = new Date().getTime();
+
+            // Redirect to PDF generation script
+            window.location.href = `generate-pdf-wk.php?t=${timestamp}`;
+
+            // Reset button after delay
+            setTimeout(() => {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }, 3000);
+        }
+    };
+
+    // Print Functionality
+    const PrintManager = {
+        init() {
+            // Handle beforeprint and afterprint events
+            window.addEventListener('beforeprint', () => {
+                document.body.classList.add('is-printing');
+            });
+
+            window.addEventListener('afterprint', () => {
+                document.body.classList.remove('is-printing');
+            });
+        }
+    };
+
+    // Duration Bar Animation
+    const DurationBars = {
+        init() {
+            // Check for reduced motion preference
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                return;
+            }
+
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const fill = entry.target.querySelector('.experience-card__duration-fill');
+                            if (fill) {
+                                // Trigger animation by re-applying the width
+                                const width = fill.style.width;
+                                fill.style.width = '0';
+                                requestAnimationFrame(() => {
+                                    fill.style.width = width;
+                                });
+                            }
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.5 }
+            );
+
+            document.querySelectorAll('.experience-card__duration-bar').forEach(bar => {
+                observer.observe(bar);
+            });
+        }
+    };
+
+    // Initialize everything when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        ThemeManager.init();
+        MobileNav.init();
+        ScrollAnimations.init();
+        SmoothScroll.init();
+        NavHighlight.init();
+        HeaderScroll.init();
+        PDFDownload.init();
+        PrintManager.init();
+        DurationBars.init();
     });
-}); 
+
+})();

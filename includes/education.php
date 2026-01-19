@@ -10,36 +10,48 @@ $stmt = $pdo->query('SELECT * FROM education ORDER BY end_date DESC');
 $educations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<section id="education" class="mb-5">
-    <div class="card">
-        <div class="card-header bg-light">
-            <h3><i class="fas fa-graduation-cap me-2"></i>Education</h3>
+<section id="education" class="bento-section" aria-labelledby="education-title">
+    <header class="section-header animate-on-scroll">
+        <div class="section-title">
+            <span class="section-title__icon">
+                <i class="fas fa-graduation-cap"></i>
+            </span>
+            <h2 id="education-title" class="section-title__text">Education</h2>
         </div>
-        <div class="card-body">
-            <div class="timeline">
-                <?php foreach ($educations as $index => $education): 
-                    // Decode the JSON description
-                    $descriptionItems = json_decode($education['description'], true);
-                ?>
-                <div class="timeline-item <?php echo ($index < count($educations) - 1) ? 'mb-4' : ''; ?>">
-                    <h4><?php echo htmlspecialchars($education['degree']); ?></h4>
-                    <p class="text-muted">
-                        <span><i class="fas fa-university me-2"></i><?php echo htmlspecialchars($education['institution']); ?></span>
-                        <span class="mx-2">|</span>
-                        <span><i class="fas fa-calendar me-2"></i><?php echo htmlspecialchars($education['start_date']); ?> - <?php echo htmlspecialchars($education['end_date']); ?></span>
-                        <span class="mx-2">|</span>
-                        <span><i class="fas fa-map-marker-alt me-2"></i><?php echo htmlspecialchars($education['location']); ?></span>
+    </header>
+
+    <div class="bento-grid bento-grid--education">
+        <?php foreach ($educations as $index => $education):
+            // Decode the JSON description
+            $descriptionItems = json_decode($education['description'], true);
+        ?>
+        <article class="bento-card education-card animate-on-scroll" style="--animation-delay: <?php echo ($index * 0.1); ?>s">
+            <div class="education-card__header">
+                <div class="education-card__meta">
+                    <h3 class="education-card__degree"><?php echo htmlspecialchars($education['degree']); ?></h3>
+                    <p class="education-card__institution">
+                        <i class="fas fa-university"></i>
+                        <?php echo htmlspecialchars($education['institution']); ?>
                     </p>
-                    <?php if (!empty($descriptionItems)): ?>
-                    <ul>
-                        <?php foreach ($descriptionItems as $item): ?>
-                        <li><?php echo htmlspecialchars($item); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                    <?php endif; ?>
                 </div>
-                <?php endforeach; ?>
+                <span class="education-card__date">
+                    <?php echo htmlspecialchars($education['start_date']); ?> &mdash; <?php echo htmlspecialchars($education['end_date']); ?>
+                </span>
             </div>
-        </div>
+
+            <div class="education-card__location">
+                <i class="fas fa-map-marker-alt"></i>
+                <?php echo htmlspecialchars($education['location']); ?>
+            </div>
+
+            <?php if (!empty($descriptionItems)): ?>
+            <ul class="education-card__list">
+                <?php foreach ($descriptionItems as $item): ?>
+                <li><?php echo htmlspecialchars($item); ?></li>
+                <?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
+        </article>
+        <?php endforeach; ?>
     </div>
-</section> 
+</section>

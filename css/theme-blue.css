@@ -1,92 +1,259 @@
-/* Blue Theme Variables */
+/*
+ * Zen Portfolio - Blue Theme (Ocean Zen)
+ * A cool, professional theme with muted teal accents
+ */
+
 :root {
-    --primary-color: #1d3557;
-    --secondary-color: #457b9d;
-    --accent-color: #e63946;
-    --text-color: #1d3557;
-    --light-bg: #f1faee;
-    --dark-bg: #1d3557;
-    --border-radius: 15px;
-    --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    --transition-speed: 0.3s;
-    --card-padding: 1.8rem;
-    --text-secondary: #6c757d;
-    --success-color: #2ecc71;
-    --warning-color: #f39c12;
-    --danger-color: #e74c3c;
-    --info-color: #3498db;
+    /* Blue Theme Colors */
+    --bg-primary: #F5F8FA;
+    --bg-secondary: #EEF3F6;
+    --bg-tertiary: #E4EBEF;
+    --bg-card: #FFFFFF;
+
+    --text-primary: #2A3540;
+    --text-secondary: #4A5B6A;
+    --text-tertiary: #7A8B9A;
+
+    --accent-primary: #5A7A8A;
+    --accent-secondary: #8A9A7A;
+    --accent-muted: #C5D0D8;
+
+    --border-color: rgba(42, 53, 64, 0.06);
+    --border-hover: rgba(42, 53, 64, 0.12);
+
+    --shadow-color: 42, 53, 64;
+    --shadow-sm: 0 1px 3px rgba(var(--shadow-color), 0.04),
+                 0 1px 2px rgba(var(--shadow-color), 0.06);
+    --shadow-md: 0 4px 12px rgba(var(--shadow-color), 0.06),
+                 0 2px 4px rgba(var(--shadow-color), 0.04);
+    --shadow-lg: 0 12px 32px rgba(var(--shadow-color), 0.08),
+                 0 4px 8px rgba(var(--shadow-color), 0.04);
+    --shadow-xl: 0 24px 48px rgba(var(--shadow-color), 0.1),
+                 0 8px 16px rgba(var(--shadow-color), 0.06);
+
+    /* Status Colors */
+    --success: #7A9A82;
+    --warning: #B8A880;
+    --error: #9A7A7A;
+    --info: #5A7A8A;
+
+    /* Skill Level Colors */
+    --skill-expert: #3D6070;
+    --skill-advanced: #5A7A8A;
+    --skill-intermediate: #7A8B9A;
+    --skill-beginner: #8A9AA0;
 }
 
-/* Blue theme overrides */
-body {
-    background-color: #f1faee;
+/* Header background for blue mode */
+.site-header {
+    background: rgba(245, 248, 250, 0.9);
 }
 
-header {
-    background: linear-gradient(135deg, #1d3557, #457b9d);
+/* Skill tags - Blue mode adjustments */
+.skill-tag--expert {
+    background: rgba(61, 96, 112, 0.12);
+    color: var(--skill-expert);
+    border-color: rgba(61, 96, 112, 0.25);
 }
 
-.card-header {
-    background: linear-gradient(135deg, #1d3557, #457b9d) !important;
+.skill-tag--advanced {
+    background: rgba(90, 122, 138, 0.12);
+    color: var(--skill-advanced);
+    border-color: rgba(90, 122, 138, 0.25);
 }
 
+.skill-tag--intermediate {
+    background: rgba(122, 139, 154, 0.12);
+    color: var(--skill-intermediate);
+    border-color: rgba(122, 139, 154, 0.25);
+}
+
+.skill-tag--beginner {
+    background: rgba(138, 154, 160, 0.1);
+    color: var(--skill-beginner);
+    border-color: rgba(138, 154, 160, 0.2);
+}
+
+/* Project icon gradient for blue mode */
+.project-card__icon {
+    background: linear-gradient(135deg, #5A7A8A, #8A9A7A);
+}
+
+/* Selection color */
+::selection {
+    background: var(--accent-primary);
+    color: white;
+}
+
+/* Focus visible */
+:focus-visible {
+    outline-color: var(--accent-primary);
+}
+
+/* Profile image border */
+.profile-hero__image {
+    border-color: var(--bg-tertiary);
+}
+
+.profile-hero:hover .profile-hero__image {
+    border-color: var(--accent-primary);
+}
+
+/* Profile status */
+.profile-hero__status {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+.profile-hero__status-dot {
+    background: var(--success);
+}
+
+/* Contact item hover */
+.contact-item:hover {
+    background: var(--bg-tertiary);
+}
+
+.contact-item__icon {
+    background: var(--bg-tertiary);
+    color: var(--accent-primary);
+}
+
+/* Button adjustments for blue mode */
+.btn--primary {
+    background: var(--accent-primary);
+    color: white;
+    border-color: var(--accent-primary);
+}
+
+.btn--primary:hover {
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+    color: white;
+}
+
+.btn--secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.btn--outline {
+    color: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.btn--outline:hover {
+    background: var(--accent-primary);
+    color: white;
+}
+
+/* Social links */
 .social-link {
-    background: #457b9d;
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
 }
 
 .social-link:hover {
-    background: #e63946;
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
 }
 
-.card-title {
-    color: #1d3557;
+/* Footer */
+.site-footer {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
 }
 
-.card-title::after {
-    background: #e63946;
+.site-footer__link {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
 }
 
-.btn-primary {
-    background-color: #1d3557;
-    border-color: #1d3557;
+.site-footer__link:hover {
+    color: var(--accent-primary);
+    border-color: var(--accent-primary);
 }
 
-.btn-primary:hover {
-    background-color: #457b9d;
-    border-color: #457b9d;
+/* Duration bar */
+.experience-card__duration {
+    background: var(--bg-tertiary);
 }
 
-.btn-outline-primary {
-    color: #1d3557;
-    border-color: #1d3557;
+.experience-card__duration-fill {
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
 }
 
-.btn-outline-primary:hover {
-    background-color: #1d3557;
-    border-color: #1d3557;
+/* Tech badges */
+.tech-badge {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
 }
 
-.timeline-item::before {
-    background: linear-gradient(to bottom, #1d3557, #457b9d);
+/* Bento card icon */
+.bento-card__icon {
+    background: var(--bg-tertiary);
+    color: var(--accent-primary);
 }
 
-.text-primary {
-    color: #1d3557 !important;
+/* Section title icon */
+.section-title__icon {
+    background: var(--bg-tertiary);
+    color: var(--accent-primary);
 }
 
-.bg-primary {
-    background-color: #1d3557 !important;
+/* Stat card */
+.stat-card__value {
+    color: var(--accent-primary);
 }
 
-.nav-tabs .nav-link.active {
-    color: #1d3557;
-    font-weight: bold;
+/* Theme toggle */
+.theme-toggle {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
 }
 
-.border-primary {
-    border-color: #1d3557 !important;
+.theme-toggle:hover {
+    background: var(--bg-secondary);
+    border-color: var(--border-hover);
 }
 
-.progress-bar {
-    background-color: #457b9d;
-} 
+/* Nav link active */
+.site-nav__link:hover,
+.site-nav__link.active {
+    background: var(--bg-tertiary);
+}
+
+/* Experience card date badge */
+.experience-card__date {
+    background: var(--bg-tertiary);
+    color: var(--text-tertiary);
+}
+
+/* List bullets */
+.experience-card__list li::before {
+    background: var(--accent-primary);
+}
+
+.education-card__list li::before {
+    background: var(--accent-secondary);
+}
+
+/* Achievement card icon */
+.achievement-card__title i {
+    color: var(--accent-primary);
+}
+
+/* Mobile nav */
+.mobile-nav {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+.mobile-nav__link:hover,
+.mobile-nav__link.active {
+    background: var(--bg-tertiary);
+}

@@ -9,46 +9,97 @@ $pdo = getDbConnection();
 $stmt = $pdo->query('SELECT DISTINCT category FROM skills ORDER BY category');
 $categories = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-// Function to get badge class based on skill level
-function getSkillBadgeClass($level) {
+// Function to get skill level class
+function getSkillLevelClass($level) {
     switch($level) {
-        case 5: return 'bg-success';
-        case 4: return 'bg-primary';
-        case 3: return 'bg-info';
-        case 2: return 'bg-warning';
-        case 1: return 'bg-secondary';
-        default: return 'bg-dark';
+        case 5: return 'skill-tag--expert';
+        case 4: return 'skill-tag--advanced';
+        case 3: return 'skill-tag--intermediate';
+        default: return 'skill-tag--beginner';
+    }
+}
+
+// Function to get skill level label
+function getSkillLevelLabel($level) {
+    switch($level) {
+        case 5: return 'Expert';
+        case 4: return 'Advanced';
+        case 3: return 'Intermediate';
+        default: return 'Beginner';
     }
 }
 ?>
 
-<section id="skills" class="mb-5">
-    <div class="card">
-        <div class="card-header bg-light">
-            <h3><i class="fas fa-tools me-2"></i>Skills</h3>
+<section id="skills" class="bento-section" aria-labelledby="skills-title">
+    <header class="section-header animate-on-scroll">
+        <div class="section-title">
+            <span class="section-title__icon">
+                <i class="fas fa-code"></i>
+            </span>
+            <h2 id="skills-title" class="section-title__text">Skills</h2>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <?php foreach ($categories as $category): 
-                    // Get skills for this category
-                    $stmt = $pdo->prepare('SELECT * FROM skills WHERE category = ? ORDER BY level DESC, name');
-                    $stmt->execute([$category]);
-                    $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    </header>
+
+    <div class="bento-grid bento-grid--skills">
+        <?php foreach ($categories as $index => $category):
+            // Get skills for this category
+            $stmt = $pdo->prepare('SELECT * FROM skills WHERE category = ? ORDER BY level DESC, name');
+            $stmt->execute([$category]);
+            $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        ?>
+        <article class="bento-card skills-card animate-on-scroll" style="--animation-delay: <?php echo ($index * 0.1); ?>s">
+            <div class="bento-card__icon">
+                <?php
+                // Choose icon based on category name
+                $icon = 'fas fa-code';
+                $catLower = strtolower($category);
+                if (strpos($catLower, 'language') !== false || strpos($catLower, 'programming') !== false) {
+                    $icon = 'fas fa-code';
+                } elseif (strpos($catLower, 'framework') !== false || strpos($catLower, 'web') !== false) {
+                    $icon = 'fas fa-layer-group';
+                } elseif (strpos($catLower, 'database') !== false) {
+                    $icon = 'fas fa-database';
+                } elseif (strpos($catLower, 'cloud') !== false || strpos($catLower, 'devops') !== false) {
+                    $icon = 'fas fa-cloud';
+                } elseif (strpos($catLower, 'tool') !== false) {
+                    $icon = 'fas fa-tools';
+                } elseif (strpos($catLower, 'soft') !== false) {
+                    $icon = 'fas fa-users';
+                }
                 ?>
-                <div class="col-md-6 mb-4">
-                    <div class="skill-category">
-                        <h4><?php echo htmlspecialchars($category); ?></h4>
-                        <div class="skill-tags">
-                            <?php foreach ($skills as $skill): ?>
-                            <span class="badge <?php echo getSkillBadgeClass($skill['level']); ?> me-2 mb-2">
-                                <?php echo htmlspecialchars($skill['name']); ?>
-                            </span>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
+                <i class="<?php echo $icon; ?>"></i>
+            </div>
+            <h3 class="skills-card__title"><?php echo htmlspecialchars($category); ?></h3>
+
+            <div class="skill-tags">
+                <?php foreach ($skills as $skill):
+                    $levelClass = getSkillLevelClass($skill['level']);
+                    $levelLabel = getSkillLevelLabel($skill['level']);
+                ?>
+                <span class="skill-tag <?php echo $levelClass; ?>"
+                      title="<?php echo htmlspecialchars($levelLabel); ?>"
+                      aria-label="<?php echo htmlspecialchars($skill['name'] . ' - ' . $levelLabel); ?>">
+                    <?php echo htmlspecialchars($skill['name']); ?>
+                </span>
                 <?php endforeach; ?>
             </div>
-        </div>
+        </article>
+        <?php endforeach; ?>
     </div>
-</section> 
+
+    <!-- Skill Level Legend -->
+    <div class="skills-legend animate-on-scroll d-print-none">
+        <span class="skills-legend__item">
+            <span class="skill-tag skill-tag--expert skill-tag--legend">Expert</span>
+        </span>
+        <span class="skills-legend__item">
+            <span class="skill-tag skill-tag--advanced skill-tag--legend">Advanced</span>
+        </span>
+        <span class="skills-legend__item">
+            <span class="skill-tag skill-tag--intermediate skill-tag--legend">Intermediate</span>
+        </span>
+        <span class="skills-legend__item">
+            <span class="skill-tag skill-tag--beginner skill-tag--legend">Beginner</span>
+        </span>
+    </div>
+</section>

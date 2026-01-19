@@ -95,8 +95,8 @@ if ($is_logged_in) {
     
     // Change Theme
     if (isset($_POST['change_theme'])) {
-        $theme = filter_var($_POST['theme'], FILTER_SANITIZE_STRING);
-        if (in_array($theme, ['light', 'dark', 'blue', 'green', 'peach', 'neon', 'minimal', 'watercolor', 'vscode', 'matrix', 'retro', 'terminal', 'ubuntu', 'github'])) { // Whitelist allowed themes
+        $theme = htmlspecialchars(trim($_POST['theme'] ?? ''), ENT_QUOTES, 'UTF-8');
+        if (in_array($theme, ['light', 'dark', 'blue', 'peach'])) { // Whitelist allowed themes (Zen theme system)
             $stmt = $pdo->prepare('UPDATE admin_settings SET theme = ? WHERE id = 1');
             $stmt->execute([$theme]);
             $message = "Theme updated successfully!";
@@ -104,11 +104,11 @@ if ($is_logged_in) {
             $message = "Invalid theme selected.";
         }
     }
-    
+
     // Also handle the new save_theme button name
     if (isset($_POST['save_theme'])) {
-        $theme = filter_var($_POST['theme'], FILTER_SANITIZE_STRING);
-        if (in_array($theme, ['light', 'dark', 'blue', 'green', 'peach', 'neon', 'minimal', 'watercolor', 'vscode', 'matrix', 'retro', 'terminal', 'ubuntu', 'github'])) { // Whitelist allowed themes
+        $theme = htmlspecialchars(trim($_POST['theme'] ?? ''), ENT_QUOTES, 'UTF-8');
+        if (in_array($theme, ['light', 'dark', 'blue', 'peach'])) { // Whitelist allowed themes (Zen theme system)
             $stmt = $pdo->prepare('UPDATE admin_settings SET theme = ? WHERE id = 1');
             $stmt->execute([$theme]);
             $message = "Theme updated successfully!";
@@ -968,19 +968,10 @@ if ($is_logged_in) {
                                                 <div class="mb-3">
                                                     <label for="theme" class="form-label">Select Theme</label>
                                                     <select class="form-select" id="theme" name="theme">
-                                                        <option value="light" <?php echo ($current_theme == 'light') ? 'selected' : ''; ?>>Light</option>
-                                                        <option value="dark" <?php echo ($current_theme == 'dark') ? 'selected' : ''; ?>>Dark</option>
-                                                        <option value="blue" <?php echo ($current_theme == 'blue') ? 'selected' : ''; ?>>Blue</option>
-                                                        <option value="green" <?php echo ($current_theme == 'green') ? 'selected' : ''; ?>>Green</option>
-                                                        <option value="peach" <?php echo ($current_theme == 'peach') ? 'selected' : ''; ?>>Peach</option>
-                                                        <option value="neon" <?php echo ($current_theme == 'neon') ? 'selected' : ''; ?>>Neon</option>
-                                                        <option value="minimal" <?php echo ($current_theme == 'minimal') ? 'selected' : ''; ?>>Minimalist</option>
-                                                        <option value="watercolor" <?php echo ($current_theme == 'watercolor') ? 'selected' : ''; ?>>Watercolor</option>
-                                                        <option value="vscode" <?php echo ($current_theme == 'vscode') ? 'selected' : ''; ?>>VSCode</option>
-                                                        <option value="matrix" <?php echo ($current_theme == 'matrix') ? 'selected' : ''; ?>>Matrix</option>
-                                                        <option value="retro" <?php echo ($current_theme == 'retro') ? 'selected' : ''; ?>>Retro Computer</option>
-                                                        <option value="ubuntu" <?php echo ($current_theme == 'ubuntu') ? 'selected' : ''; ?>>Ubuntu</option>
-                                                        <option value="github" <?php echo ($current_theme == 'github') ? 'selected' : ''; ?>>GitHub</option>
+                                                        <option value="light" <?php echo ($current_theme == 'light') ? 'selected' : ''; ?>>Light (Morning Mist)</option>
+                                                        <option value="dark" <?php echo ($current_theme == 'dark') ? 'selected' : ''; ?>>Dark (Midnight Garden)</option>
+                                                        <option value="blue" <?php echo ($current_theme == 'blue') ? 'selected' : ''; ?>>Blue (Ocean Zen)</option>
+                                                        <option value="peach" <?php echo ($current_theme == 'peach') ? 'selected' : ''; ?>>Peach (Sunset Calm)</option>
                                                     </select>
                                                 </div>
                                                 

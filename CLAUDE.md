@@ -8,6 +8,10 @@ This is a **PHP portfolio/resume website** with SQLite database integration, des
 
 **⚠️ CRITICAL: This is a PUBLIC-FACING application. Security is mandatory - never compromise on security practices.**
 
+## Git Commit Guidelines
+
+**IMPORTANT: Do NOT add "Co-Authored-By: Claude" or any similar co-author attribution to git commits.** All commits should be attributed solely to the developer making the commit.
+
 ## Common Development Commands
 
 ### Docker Development (Recommended)
@@ -193,7 +197,7 @@ if (!isset($_POST['csrf_token']) || !validateCsrfToken($_POST['csrf_token'])) {
 
 ### Input Validation & Sanitization
 ```php
-$theme = filter_var($_POST['theme'], FILTER_SANITIZE_STRING);
+$theme = htmlspecialchars(trim($_POST['theme'] ?? ''), ENT_QUOTES, 'UTF-8');
 if (!in_array($theme, ['light', 'dark', 'blue', ...])) {
     die('Invalid theme');
 }

@@ -13,63 +13,114 @@ $achievements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt = $pdo->query('SELECT * FROM certificates_conferences ORDER BY date DESC');
 $certificates_conferences = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Separate certificates and conferences
-$certificates = array_filter($certificates_conferences, function($item) {
-    return $item['type'] === 'certificate';
-});
+// Helper function to get icon based on type/title
+function getAchievementIcon($title, $type = null) {
+    $text = strtolower($title);
 
-$conferences = array_filter($certificates_conferences, function($item) {
-    return $item['type'] === 'conference';
-});
+    if ($type === 'certificate' || strpos($text, 'certif') !== false) {
+        return 'fa-certificate';
+    } elseif ($type === 'conference' || strpos($text, 'conference') !== false || strpos($text, 'summit') !== false) {
+        return 'fa-users';
+    } elseif (strpos($text, 'award') !== false || strpos($text, 'winner') !== false) {
+        return 'fa-trophy';
+    } elseif (strpos($text, 'speaker') !== false || strpos($text, 'talk') !== false) {
+        return 'fa-microphone';
+    } elseif (strpos($text, 'publication') !== false || strpos($text, 'paper') !== false) {
+        return 'fa-file-alt';
+    } elseif (strpos($text, 'patent') !== false) {
+        return 'fa-lightbulb';
+    } else {
+        return 'fa-star';
+    }
+}
 ?>
 
-<section id="achievements" class="mb-5">
-    <div class="card">
-        <div class="card-header bg-light">
-            <h3><i class="fas fa-trophy me-2"></i>Achievements & Certificates</h3>
+<section id="achievements" class="bento-section" aria-labelledby="achievements-title">
+    <header class="section-header animate-on-scroll">
+        <div class="section-title">
+            <span class="section-title__icon">
+                <i class="fas fa-trophy"></i>
+            </span>
+            <h2 id="achievements-title" class="section-title__text">Achievements</h2>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <h4 class="mb-3">Achievements</h4>
-                    <ul class="list-unstyled">
-                        <?php foreach ($achievements as $achievement): ?>
-                        <li class="mb-3">
-                            <h5><?php echo htmlspecialchars($achievement['title']); ?></h5>
-                            <p><?php echo htmlspecialchars($achievement['description']); ?></p>
-                        </li>
-                        <?php endforeach; ?>
-                        <?php if (empty($achievements)): ?>
-                        <li class="mb-3">
-                            <p class="text-muted">No achievements listed.</p>
-                        </li>
-                        <?php endif; ?>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <h4 class="mb-3">Certificates & Conferences</h4>
-                    <ul class="list-unstyled">
-                        <?php foreach ($certificates_conferences as $item): ?>
-                        <li class="mb-3">
-                            <h5><?php echo htmlspecialchars($item['title']); ?></h5>
-                            <p><?php echo htmlspecialchars($item['description']); ?></p>
-                            <small class="text-muted">
-                                <?php echo htmlspecialchars($item['issuer']); ?> | 
-                                <?php echo htmlspecialchars($item['date']); ?>
-                                <?php if (!empty($item['url'])): ?>
-                                | <a href="<?php echo htmlspecialchars($item['url']); ?>" target="_blank" rel="noopener noreferrer">View</a>
-                                <?php endif; ?>
-                            </small>
-                        </li>
-                        <?php endforeach; ?>
-                        <?php if (empty($certificates_conferences)): ?>
-                        <li class="mb-3">
-                            <p class="text-muted">No certificates or conferences listed.</p>
-                        </li>
-                        <?php endif; ?>
-                    </ul>
-                </div>
+    </header>
+
+    <div class="bento-grid bento-grid--achievements">
+        <?php
+        $cardIndex = 0;
+
+        // Display achievements
+        foreach ($achievements as $achievement):
+            $iconClass = getAchievementIcon($achievement['title']);
+        ?>
+        <article class="bento-card achievement-card animate-on-scroll" style="--animation-delay: <?php echo ($cardIndex * 0.1); ?>s">
+            <div class="achievement-card__icon">
+                <i class="fas <?php echo $iconClass; ?>"></i>
             </div>
-        </div>
+            <div class="achievement-card__content">
+                <h3 class="achievement-card__title">
+                    <?php echo htmlspecialchars($achievement['title']); ?>
+                </h3>
+                <p class="achievement-card__description">
+                    <?php echo htmlspecialchars($achievement['description']); ?>
+                </p>
+                <?php if (!empty($achievement['date'])): ?>
+                <span class="achievement-card__date">
+                    <i class="fas fa-calendar-alt"></i>
+                    <?php echo htmlspecialchars($achievement['date']); ?>
+                </span>
+                <?php endif; ?>
+            </div>
+        </article>
+        <?php
+            $cardIndex++;
+        endforeach;
+
+        // Display certificates and conferences
+        foreach ($certificates_conferences as $item):
+            $iconClass = getAchievementIcon($item['title'], $item['type']);
+        ?>
+        <article class="bento-card achievement-card achievement-card--<?php echo htmlspecialchars($item['type']); ?> animate-on-scroll" style="--animation-delay: <?php echo ($cardIndex * 0.1); ?>s">
+            <div class="achievement-card__icon">
+                <i class="fas <?php echo $iconClass; ?>"></i>
+            </div>
+            <div class="achievement-card__content">
+                <h3 class="achievement-card__title">
+                    <?php echo htmlspecialchars($item['title']); ?>
+                </h3>
+                <p class="achievement-card__description">
+                    <?php echo htmlspecialchars($item['description']); ?>
+                </p>
+                <div class="achievement-card__meta">
+                    <span class="achievement-card__issuer">
+                        <i class="fas fa-building"></i>
+                        <?php echo htmlspecialchars($item['issuer']); ?>
+                    </span>
+                    <span class="achievement-card__date">
+                        <i class="fas fa-calendar-alt"></i>
+                        <?php echo htmlspecialchars($item['date']); ?>
+                    </span>
+                </div>
+                <?php if (!empty($item['url'])): ?>
+                <a href="<?php echo htmlspecialchars($item['url']); ?>"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="achievement-card__link">
+                    <i class="fas fa-external-link-alt"></i>
+                    View Certificate
+                </a>
+                <?php endif; ?>
+            </div>
+        </article>
+        <?php
+            $cardIndex++;
+        endforeach;
+        ?>
+
+        <?php if (empty($achievements) && empty($certificates_conferences)): ?>
+        <article class="bento-card achievement-card achievement-card--empty">
+            <p class="achievement-card__empty-text">No achievements listed yet.</p>
+        </article>
+        <?php endif; ?>
     </div>
-</section> 
+</section>

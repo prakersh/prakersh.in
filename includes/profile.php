@@ -1,121 +1,165 @@
 <?php
-// Fetch skills if not already fetched
-if (!isset($skillsByCategory)) {
-    // Include the database connection if needed
-    if (!isset($pdo)) {
-        require_once __DIR__ . '/db_connect.php';
-        $pdo = getDbConnection();
-    }
-    
-    // Fetch skills
-    $stmt = $pdo->query('SELECT * FROM skills ORDER BY category, level DESC');
-    $skills = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Group skills by category
-    $skillsByCategory = [];
-    foreach ($skills as $skill) {
-        $skillsByCategory[$skill['category']][] = $skill;
+// Fetch experience count for stats
+if (!isset($pdo)) {
+    require_once __DIR__ . '/db_connect.php';
+    $pdo = getDbConnection();
+}
+
+// Calculate years of experience from first job
+$stmt = $pdo->query('SELECT MIN(start_date) as first_date FROM experience');
+$firstDate = $stmt->fetchColumn();
+$yearsExperience = 0;
+if ($firstDate) {
+    // Handle different date formats: "MM/YYYY", "YYYY", or "YYYY-MM-DD"
+    try {
+        if (preg_match('/^(\d{2})\/(\d{4})$/', $firstDate, $matches)) {
+            // Format: MM/YYYY
+            $start = new DateTime($matches[2] . '-' . $matches[1] . '-01');
+        } elseif (preg_match('/^\d{4}$/', $firstDate)) {
+            // Format: YYYY
+            $start = new DateTime($firstDate . '-01-01');
+        } else {
+            // Try parsing as-is
+            $start = new DateTime($firstDate);
+        }
+        $now = new DateTime();
+        $yearsExperience = $now->diff($start)->y;
+    } catch (Exception $e) {
+        $yearsExperience = 0;
     }
 }
+
+// Count projects
+$stmt = $pdo->query('SELECT COUNT(*) FROM projects');
+$projectCount = $stmt->fetchColumn();
+
+// Count certifications
+$stmt = $pdo->query('SELECT COUNT(*) FROM certificates_conferences');
+$certCount = $stmt->fetchColumn();
 ?>
 
-<section id="profile" class="mb-5">
-    <div class="card profile-card">
-        <div class="card-header text-center">
-            <h3><i class="fas fa-user-circle me-2"></i>About Me</h3>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-12 position-relative">
-                    <div class="float-md-end ms-md-4 mb-4 text-center text-md-start">
-                        <img src="<?php echo htmlspecialchars($profile['profile_image']); ?>" alt="<?php echo htmlspecialchars($profile['name']); ?> Profile Picture" class="img-fluid profile-img border mb-3">
-                        <div class="social-links-container d-print-none">
-                            <a href="https://linkedin.com/in/<?php echo htmlspecialchars(str_replace('linkedin.com/in/', '', $profile['linkedin'])); ?>" target="_blank" class="social-link mx-1"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="https://<?php echo htmlspecialchars($profile['github']); ?>" target="_blank" class="social-link mx-1"><i class="fab fa-github"></i></a>
-                            <a href="mailto:<?php echo htmlspecialchars($profile['email']); ?>" class="social-link mx-1"><i class="fas fa-envelope"></i></a>
-                        </div>
-                    </div>
-                    <h2 class="card-title mb-1"><?php echo htmlspecialchars($profile['name']); ?></h2>
-                    <h4 class="text-muted mb-3"><?php echo htmlspecialchars($profile['job_title']); ?></h4>
-                    <div class="profile-summary mb-4">
-                        <p class="lead"><?php echo htmlspecialchars($profile['summary']); ?></p>
-                    </div>
-                    <div class="contact-info-grid mb-4">
-                        <div class="contact-item">
-                            <i class="fas fa-envelope contact-icon"></i>
-                            <div class="contact-details">
-                                <span class="contact-label">Email</span>
-                                <a href="mailto:<?php echo htmlspecialchars($profile['email']); ?>" class="contact-value print-link"><?php echo htmlspecialchars($profile['email']); ?></a>
-                            </div>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone contact-icon"></i>
-                            <div class="contact-details">
-                                <span class="contact-label">Phone</span>
-                                <a href="tel:<?php echo htmlspecialchars(str_replace(' ', '', $profile['phone'])); ?>" class="contact-value print-link"><?php echo htmlspecialchars($profile['phone']); ?></a>
-                            </div>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt contact-icon"></i>
-                            <div class="contact-details">
-                                <span class="contact-label">Location</span>
-                                <span class="contact-value"><?php echo htmlspecialchars($profile['location']); ?></span>
-                            </div>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fab fa-linkedin contact-icon"></i>
-                            <div class="contact-details">
-                                <span class="contact-label">LinkedIn</span>
-                                <a href="https://<?php echo htmlspecialchars($profile['linkedin']); ?>" target="_blank" class="contact-value print-link"><?php echo htmlspecialchars($profile['linkedin']); ?></a>
-                            </div>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-globe contact-icon"></i>
-                            <div class="contact-details">
-                                <span class="contact-label">Website</span>
-                                <a href="https://<?php echo htmlspecialchars($profile['website']); ?>" target="_blank" class="contact-value print-link"><?php echo htmlspecialchars($profile['website']); ?></a>
-                            </div>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fab fa-github contact-icon"></i>
-                            <div class="contact-details">
-                                <span class="contact-label">GitHub</span>
-                                <a href="https://<?php echo htmlspecialchars($profile['github']); ?>" target="_blank" class="contact-value print-link"><?php echo htmlspecialchars($profile['github']); ?></a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <?php foreach ($skillsByCategory as $category => $categorySkills): ?>
-                    <div class="skill-category mb-2">
-                        <h5 class="skill-heading"><?php echo htmlspecialchars($category); ?></h5>
-                        <div class="d-flex flex-wrap">
-                            <?php foreach ($categorySkills as $skill): 
-                                $bgClass = 'bg-primary';
-                                switch($skill['level']) {
-                                    case 5: $bgClass = 'bg-success'; break;
-                                    case 4: $bgClass = 'bg-primary'; break;
-                                    case 3: $bgClass = 'bg-info'; break;
-                                    case 2: $bgClass = 'bg-warning'; break;
-                                    case 1: $bgClass = 'bg-secondary'; break;
-                                }
-                            ?>
-                            <span class="badge <?php echo $bgClass; ?> me-2 mb-2"><?php echo htmlspecialchars($skill['name']); ?></span>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                    
-                    <div class="mt-4 d-flex justify-content-end d-print-none">
-                        <button class="btn btn-outline-primary download-resume" id="download-resume-btn" aria-label="Download Resume PDF">
-                            <i class="fas fa-download me-2"></i>Download Resume
-                        </button>
-                        <button class="btn btn-print ms-2" id="print-resume-btn" aria-label="Print Resume">
-                            <i class="fas fa-print me-2"></i>Print
-                        </button>
+<section id="profile" class="bento-section" aria-labelledby="profile-title">
+    <!-- Profile Hero Card - Spans full width -->
+    <article class="bento-card bento-card--hero profile-hero animate-on-scroll">
+        <div class="profile-hero__content">
+            <div class="profile-hero__image-wrapper">
+                <img src="<?php echo htmlspecialchars($profile['profile_image']); ?>"
+                     alt="<?php echo htmlspecialchars($profile['name']); ?>"
+                     class="profile-hero__image"
+                     loading="eager">
+                <span class="profile-hero__status" aria-label="Available for opportunities">
+                    <span class="profile-hero__status-dot"></span>
+                    Open to work
+                </span>
+            </div>
+
+            <div class="profile-hero__info">
+                <h1 id="profile-title" class="profile-hero__name">
+                    <?php echo htmlspecialchars($profile['name']); ?>
+                </h1>
+                <p class="profile-hero__title">
+                    <?php echo htmlspecialchars($profile['job_title']); ?>
+                </p>
+                <p class="profile-hero__summary">
+                    <?php echo htmlspecialchars($profile['summary']); ?>
+                </p>
+
+                <div class="profile-hero__actions d-print-none">
+                    <div class="social-links">
+                        <?php if (!empty($profile['linkedin'])): ?>
+                        <a href="<?php echo htmlspecialchars($profile['linkedin']); ?>"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="social-link"
+                           aria-label="LinkedIn Profile">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($profile['github'])): ?>
+                        <a href="<?php echo htmlspecialchars($profile['github']); ?>"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="social-link"
+                           aria-label="GitHub Profile">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <?php endif; ?>
+
+                        <a href="mailto:<?php echo htmlspecialchars($profile['email']); ?>"
+                           class="social-link"
+                           aria-label="Send Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Contact Info Grid -->
+        <div class="profile-hero__contact">
+            <a href="mailto:<?php echo htmlspecialchars($profile['email']); ?>" class="contact-item">
+                <span class="contact-item__icon">
+                    <i class="fas fa-envelope"></i>
+                </span>
+                <span class="contact-item__text">
+                    <span class="contact-item__label">Email</span>
+                    <span class="contact-item__value print-link"><?php echo htmlspecialchars($profile['email']); ?></span>
+                </span>
+            </a>
+
+            <a href="tel:<?php echo htmlspecialchars(str_replace(' ', '', $profile['phone'])); ?>" class="contact-item">
+                <span class="contact-item__icon">
+                    <i class="fas fa-phone"></i>
+                </span>
+                <span class="contact-item__text">
+                    <span class="contact-item__label">Phone</span>
+                    <span class="contact-item__value print-link"><?php echo htmlspecialchars($profile['phone']); ?></span>
+                </span>
+            </a>
+
+            <div class="contact-item">
+                <span class="contact-item__icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </span>
+                <span class="contact-item__text">
+                    <span class="contact-item__label">Location</span>
+                    <span class="contact-item__value"><?php echo htmlspecialchars($profile['location']); ?></span>
+                </span>
+            </div>
+
+            <?php if (!empty($profile['website'])): ?>
+            <a href="<?php echo htmlspecialchars($profile['website']); ?>"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="contact-item">
+                <span class="contact-item__icon">
+                    <i class="fas fa-globe"></i>
+                </span>
+                <span class="contact-item__text">
+                    <span class="contact-item__label">Website</span>
+                    <span class="contact-item__value print-link"><?php echo htmlspecialchars(preg_replace('#^https?://#', '', $profile['website'])); ?></span>
+                </span>
+            </a>
+            <?php endif; ?>
+        </div>
+    </article>
+
+    <!-- Stats Cards Row -->
+    <div class="bento-stats">
+        <article class="bento-card bento-card--stat stat-card animate-on-scroll" style="--animation-delay: 0.1s">
+            <span class="stat-card__value"><?php echo $yearsExperience; ?>+</span>
+            <span class="stat-card__label">Years Experience</span>
+        </article>
+
+        <article class="bento-card bento-card--stat stat-card animate-on-scroll" style="--animation-delay: 0.2s">
+            <span class="stat-card__value"><?php echo $projectCount; ?></span>
+            <span class="stat-card__label">Projects</span>
+        </article>
+
+        <article class="bento-card bento-card--stat stat-card animate-on-scroll" style="--animation-delay: 0.3s">
+            <span class="stat-card__value"><?php echo $certCount; ?></span>
+            <span class="stat-card__label">Certificates</span>
+        </article>
     </div>
-</section> 
-</section> 
+</section>
