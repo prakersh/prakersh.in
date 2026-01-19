@@ -31,6 +31,9 @@ try {
     $tempHtml = __DIR__ . '/temp_resume.html';
     $tempPdf = __DIR__ . '/temp_resume.pdf';
     
+    // Get base URL for absolute paths (needed for wkhtmltopdf)
+    $baseDir = __DIR__;
+
     // Start output buffer to capture PHP output
     ob_start();
     ?>
@@ -46,20 +49,33 @@ try {
         <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-        <!-- Base CSS - same as main site -->
-        <link rel="stylesheet" href="css/style.css">
-        <!-- Print CSS - will be triggered by --print-media-type -->
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <!-- Base CSS - using absolute file:// paths for wkhtmltopdf -->
+        <link rel="stylesheet" href="file://<?php echo $baseDir; ?>/css/style.css">
+        <!-- Print CSS - loaded directly (not media="print") since we want it always applied -->
+        <link rel="stylesheet" href="file://<?php echo $baseDir; ?>/css/print.css">
         <style>
-            /* Additional PDF-specific overrides to ensure print styles apply */
-            @media print {
-                /* Ensure body fills the page */
-                html, body {
-                    width: 100% !important;
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    background: #fff !important;
-                }
+            /* Force print styles to apply for PDF generation */
+            /* These mirror the critical @media print rules from print.css */
+            html, body {
+                width: 100% !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #fff !important;
+                font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif !important;
+                font-size: 9pt !important;
+                line-height: 1.4 !important;
+                color: #333 !important;
+                overflow: visible !important;
+            }
+
+            /* Hide non-print elements */
+            .d-print-none, .site-header, .site-footer, .theme-toggle,
+            .mobile-menu-toggle, .mobile-nav, .social-links, .btn,
+            .skills-legend, .project-card__actions, .achievement-card__link,
+            .bento-stats, .experience-card__duration-bar, .experience-card__duration,
+            .profile-hero__status, .profile-hero__actions, nav {
+                display: none !important;
             }
         </style>
     </head>
@@ -97,9 +113,11 @@ try {
         '--encoding UTF-8',
         '--enable-local-file-access',
         '--no-stop-slow-scripts',
-        '--javascript-delay 1000',
-        '--print-media-type',  // Trigger @media print styles
-        '--disable-smart-shrinking'  // Prevent auto-shrinking that compresses content
+        '--javascript-delay 500',
+        '--disable-smart-shrinking',    // CRITICAL: Prevent auto-shrinking that compresses content
+        '--dpi 96',                     // Match screen DPI for consistent sizing
+        '--zoom 1.0',                   // No zoom - render at 100%
+        '--image-quality 100'           // High quality images
     ];
     
     $command = escapeshellcmd($wkhtmltopdf) . ' ' . implode(' ', $options) . ' ' . 
