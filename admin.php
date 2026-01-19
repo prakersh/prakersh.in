@@ -48,11 +48,14 @@ if (isset($_POST['login'])) {
     }
     
     if ($passwordValid) {
+        // Regenerate session ID to prevent session fixation attacks
+        session_regenerate_id(true);
+
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_username'] = $user['username'];
         $_SESSION['last_activity'] = time(); // Add session timeout tracking
         $is_logged_in = true;
-        
+
         // Log successful login
         error_log("Admin login successful for user: " . $user['username'] . " from IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
     } else {

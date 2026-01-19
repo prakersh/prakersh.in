@@ -1,0 +1,24 @@
+# Deny all access to database files
+# This prevents direct download of SQLite database via HTTP
+
+<Files *.db>
+    Require all denied
+</Files>
+
+<Files *.sqlite>
+    Require all denied
+</Files>
+
+<Files *.sqlite3>
+    Require all denied
+</Files>
+
+# Additional protection - deny all direct access to this directory
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>

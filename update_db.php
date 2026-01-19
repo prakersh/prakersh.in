@@ -1,5 +1,14 @@
 <?php
 // Script to add the theme column to the admin_settings table
+session_start();
+
+// SECURITY: Require admin authentication
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    error_log("Unauthorized database update attempt from IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+    http_response_code(403);
+    die('Access denied. Admin authentication required.');
+}
+
 require_once 'includes/db_connect.php';
 
 // Get a database connection

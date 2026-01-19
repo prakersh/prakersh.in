@@ -35,45 +35,46 @@ try {
     ob_start();
     ?>
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><?php echo htmlspecialchars($profile['name']); ?> - Resume</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <!-- Google Fonts - same as main site -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <!-- Base CSS - same as main site -->
         <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/print.css">
+        <!-- Print CSS - will be triggered by --print-media-type -->
+        <link rel="stylesheet" href="css/print.css" media="print">
         <style>
-            /* Force print styles to apply */
-            body {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                background-color: white;
-            }
-            
-            /* Hide elements we don't want in PDF */
-            .d-print-none, header, footer, .btn, 
-            .navbar-toggler, .social-icon, .social-links-container, 
-            .print-message, #print-resume-btn {
-                display: none !important;
+            /* Additional PDF-specific overrides to ensure print styles apply */
+            @media print {
+                /* Ensure body fills the page */
+                html, body {
+                    width: 100% !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    background: #fff !important;
+                }
             }
         </style>
     </head>
-    <body class="is-printing preparing-for-print">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-10 offset-md-1">
-                    <?php
-                    // Include core sections
-                    include 'includes/profile.php';
-                    include 'includes/experience.php';
-                    include 'includes/education.php';
-                    include 'includes/skills.php';
-                    include 'includes/achievements.php';
-                    include 'includes/projects.php';
-                    ?>
-                </div>
+    <body class="is-printing">
+        <div class="zen-container">
+            <div class="zen-content">
+                <?php
+                // Include core sections - same order as index.php
+                include 'includes/profile.php';
+                include 'includes/experience.php';
+                include 'includes/education.php';
+                include 'includes/skills.php';
+                include 'includes/projects.php';
+                include 'includes/achievements.php';
+                ?>
             </div>
         </div>
     </body>
@@ -86,16 +87,19 @@ try {
     file_put_contents($tempHtml, $htmlContent);
     
     // Build the wkhtmltopdf command with options
+    // Match print.css @page settings: margin: 0.5cm (≈5mm)
     $options = [
         '--page-size A4',
-        '--margin-top 10mm',
-        '--margin-right 10mm',
-        '--margin-bottom 10mm',
-        '--margin-left 10mm',
+        '--margin-top 5mm',
+        '--margin-right 5mm',
+        '--margin-bottom 5mm',
+        '--margin-left 5mm',
         '--encoding UTF-8',
         '--enable-local-file-access',
         '--no-stop-slow-scripts',
-        '--javascript-delay 1000'
+        '--javascript-delay 1000',
+        '--print-media-type',  // Trigger @media print styles
+        '--disable-smart-shrinking'  // Prevent auto-shrinking that compresses content
     ];
     
     $command = escapeshellcmd($wkhtmltopdf) . ' ' . implode(' ', $options) . ' ' . 

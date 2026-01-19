@@ -21,7 +21,9 @@ function getDbConnection() {
         
         return $pdo;
     } catch (PDOException $e) {
-        die("Database connection failed: " . $e->getMessage());
+        // Log full error for debugging, but don't expose to user
+        error_log("Database connection failed: " . $e->getMessage());
+        die("A database error occurred. Please contact the administrator.");
     }
 }
 
