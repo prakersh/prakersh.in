@@ -10,14 +10,15 @@ $stmt = $pdo->query('SELECT MIN(start_date) as first_date FROM experience');
 $firstDate = $stmt->fetchColumn();
 $yearsExperience = 0;
 if ($firstDate) {
-    // Handle different date formats: "MM/YYYY", "YYYY", or "YYYY-MM-DD"
+    // Handle different date formats: "MM/YYYY...", "YYYY", or "YYYY-MM-DD"
     try {
-        if (preg_match('/^(\d{2})\/(\d{4})$/', $firstDate, $matches)) {
-            // Format: MM/YYYY
+        // Extract first MM/YYYY pattern from string (handles "06/2018 to 12/2020" format)
+        if (preg_match('/(\d{2})\/(\d{4})/', $firstDate, $matches)) {
+            // Format: MM/YYYY (anywhere in string)
             $start = new DateTime($matches[2] . '-' . $matches[1] . '-01');
-        } elseif (preg_match('/^\d{4}$/', $firstDate)) {
-            // Format: YYYY
-            $start = new DateTime($firstDate . '-01-01');
+        } elseif (preg_match('/^(\d{4})/', $firstDate, $matches)) {
+            // Format: YYYY at start
+            $start = new DateTime($matches[1] . '-01-01');
         } else {
             // Try parsing as-is
             $start = new DateTime($firstDate);
@@ -41,7 +42,7 @@ $certCount = $stmt->fetchColumn();
 <section id="profile" class="bento-section" aria-labelledby="profile-title">
     <!-- Profile Hero Card - Spans full width -->
     <article class="bento-card bento-card--hero profile-hero animate-on-scroll">
-        <div class="profile-hero__content">
+        <div class="profile-hero__header">
             <div class="profile-hero__image-wrapper">
                 <img src="<?php echo htmlspecialchars($profile['profile_image']); ?>"
                      alt="<?php echo htmlspecialchars($profile['name']); ?>"
@@ -59,9 +60,6 @@ $certCount = $stmt->fetchColumn();
                 </h1>
                 <p class="profile-hero__title">
                     <?php echo htmlspecialchars($profile['job_title']); ?>
-                </p>
-                <p class="profile-hero__summary">
-                    <?php echo htmlspecialchars($profile['summary']); ?>
                 </p>
 
                 <div class="profile-hero__actions d-print-none">
@@ -95,6 +93,11 @@ $certCount = $stmt->fetchColumn();
                 </div>
             </div>
         </div>
+
+        <!-- Summary - Full Width -->
+        <p class="profile-hero__summary">
+            <?php echo htmlspecialchars($profile['summary']); ?>
+        </p>
 
         <!-- Contact Info Grid -->
         <div class="profile-hero__contact">

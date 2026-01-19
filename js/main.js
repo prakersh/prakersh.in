@@ -13,20 +13,31 @@
         storageKey: 'zen-theme',
 
         init() {
-            // Get saved theme or default to light
+            // Get user's saved preference from localStorage
             const saved = localStorage.getItem(this.storageKey);
-            if (saved && this.themes.includes(saved)) {
-                this.currentIndex = this.themes.indexOf(saved);
-            }
 
-            // Apply initial theme
-            this.applyTheme(this.themes[this.currentIndex]);
+            if (saved && this.themes.includes(saved)) {
+                // User has a preference - use it
+                this.currentIndex = this.themes.indexOf(saved);
+                this.applyTheme(saved);
+            } else {
+                // No user preference - use admin-set theme (already loaded by PHP)
+                // Read current theme from data-theme attribute or theme-css link
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                if (this.themes.includes(currentTheme)) {
+                    this.currentIndex = this.themes.indexOf(currentTheme);
+                }
+                // Don't apply - already set by server
+            }
 
             // Bind toggle button
             const toggleBtn = document.getElementById('theme-toggle');
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', () => this.toggle());
             }
+
+            // Update icon to match current theme
+            this.updateIcon(this.themes[this.currentIndex]);
         },
 
         toggle() {

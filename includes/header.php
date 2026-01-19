@@ -25,18 +25,22 @@
     <link rel="stylesheet" href="css/style.css">
 
     <?php
-    // Get current theme from database
+    // Get current theme from database (admin default)
+    $adminTheme = 'light';
     try {
         $stmt = $pdo->prepare('SELECT theme FROM admin_settings WHERE id = 1');
         $stmt->execute();
-        $theme = $stmt->fetchColumn();
+        $fetchedTheme = $stmt->fetchColumn();
+        if ($fetchedTheme && in_array($fetchedTheme, ['light', 'dark', 'peach', 'blue'])) {
+            $adminTheme = $fetchedTheme;
+        }
 
         // Only load theme CSS if not light (light is default in style.css)
-        if ($theme && in_array($theme, ['dark', 'peach', 'blue'])) {
-            echo '<link rel="stylesheet" href="css/theme-' . htmlspecialchars($theme) . '.css" id="theme-css">';
+        if ($adminTheme !== 'light') {
+            echo '<link rel="stylesheet" href="css/theme-' . htmlspecialchars($adminTheme) . '.css" id="theme-css">';
         }
     } catch (PDOException $e) {
-        $theme = 'light';
+        $adminTheme = 'light';
     }
     ?>
 
@@ -46,10 +50,11 @@
     <!-- Theme initialization (prevents flash) -->
     <script>
         (function() {
+            const adminTheme = '<?php echo htmlspecialchars($adminTheme); ?>';
             const saved = localStorage.getItem('zen-theme');
-            if (saved && ['light', 'dark', 'peach', 'blue'].includes(saved)) {
-                document.documentElement.setAttribute('data-theme', saved);
-            }
+            // Use user's preference if set, otherwise use admin default
+            const theme = (saved && ['light', 'dark', 'peach', 'blue'].includes(saved)) ? saved : adminTheme;
+            document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
 </head>
