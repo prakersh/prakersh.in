@@ -5,7 +5,7 @@
             <div class="site-footer__inner">
                 <div class="site-footer__links">
                     <?php if (!empty($profile['linkedin'])): ?>
-                    <a href="<?php echo htmlspecialchars($profile['linkedin']); ?>"
+                    <a href="<?php echo htmlspecialchars(ensureHttps($profile['linkedin'])); ?>"
                        target="_blank"
                        rel="noopener noreferrer"
                        class="site-footer__link"
@@ -15,7 +15,7 @@
                     <?php endif; ?>
 
                     <?php if (!empty($profile['github'])): ?>
-                    <a href="<?php echo htmlspecialchars($profile['github']); ?>"
+                    <a href="<?php echo htmlspecialchars(ensureHttps($profile['github'])); ?>"
                        target="_blank"
                        rel="noopener noreferrer"
                        class="site-footer__link"
@@ -31,7 +31,7 @@
                     </a>
 
                     <?php if (!empty($profile['website'])): ?>
-                    <a href="<?php echo htmlspecialchars($profile['website']); ?>"
+                    <a href="<?php echo htmlspecialchars(ensureHttps($profile['website'])); ?>"
                        target="_blank"
                        rel="noopener noreferrer"
                        class="site-footer__link"

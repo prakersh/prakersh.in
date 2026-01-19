@@ -5,6 +5,18 @@ if (!isset($pdo)) {
     $pdo = getDbConnection();
 }
 
+// Helper function to ensure URLs have https:// prefix
+if (!function_exists('ensureHttps')) {
+    function ensureHttps($url) {
+        if (empty($url)) return '';
+        $url = trim($url);
+        if (!preg_match('#^https?://#i', $url)) {
+            return 'https://' . $url;
+        }
+        return $url;
+    }
+}
+
 // Calculate years of experience from first job
 $stmt = $pdo->query('SELECT MIN(start_date) as first_date FROM experience');
 $firstDate = $stmt->fetchColumn();
@@ -65,7 +77,7 @@ $certCount = $stmt->fetchColumn();
                 <div class="profile-hero__actions d-print-none">
                     <div class="social-links">
                         <?php if (!empty($profile['linkedin'])): ?>
-                        <a href="<?php echo htmlspecialchars($profile['linkedin']); ?>"
+                        <a href="<?php echo htmlspecialchars(ensureHttps($profile['linkedin'])); ?>"
                            target="_blank"
                            rel="noopener noreferrer"
                            class="social-link"
@@ -75,7 +87,7 @@ $certCount = $stmt->fetchColumn();
                         <?php endif; ?>
 
                         <?php if (!empty($profile['github'])): ?>
-                        <a href="<?php echo htmlspecialchars($profile['github']); ?>"
+                        <a href="<?php echo htmlspecialchars(ensureHttps($profile['github'])); ?>"
                            target="_blank"
                            rel="noopener noreferrer"
                            class="social-link"
@@ -132,7 +144,7 @@ $certCount = $stmt->fetchColumn();
             </div>
 
             <?php if (!empty($profile['website'])): ?>
-            <a href="<?php echo htmlspecialchars($profile['website']); ?>"
+            <a href="<?php echo htmlspecialchars(ensureHttps($profile['website'])); ?>"
                target="_blank"
                rel="noopener noreferrer"
                class="contact-item">

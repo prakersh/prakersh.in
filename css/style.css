@@ -937,27 +937,34 @@ a.contact-item__value:hover {
 }
 
 .skill-tag--expert {
-    background: rgba(93, 138, 102, 0.12);
+    background: rgba(93, 138, 102, 0.15);
     color: var(--skill-expert);
-    border-color: rgba(93, 138, 102, 0.25);
+    border-color: rgba(93, 138, 102, 0.3);
+    border-left: 3px solid #4A7A54;
+    font-weight: 600;
 }
 
 .skill-tag--advanced {
-    background: rgba(124, 154, 130, 0.12);
+    background: rgba(124, 154, 130, 0.15);
     color: var(--skill-advanced);
-    border-color: rgba(124, 154, 130, 0.25);
+    border-color: rgba(124, 154, 130, 0.3);
+    border-left: 3px solid #7C9A82;
+    font-weight: 500;
 }
 
 .skill-tag--intermediate {
-    background: rgba(124, 140, 154, 0.12);
-    color: var(--skill-intermediate);
-    border-color: rgba(124, 140, 154, 0.25);
+    background: rgba(100, 140, 180, 0.12);
+    color: #4A6B8A;
+    border-color: rgba(100, 140, 180, 0.25);
+    border-left: 3px solid #6A9BC0;
 }
 
 .skill-tag--beginner {
     background: var(--bg-tertiary);
     color: var(--text-secondary);
     border-color: var(--border-color);
+    border-left: 3px solid #B0B0B0;
+    opacity: 0.85;
 }
 
 .skill-tag:hover {

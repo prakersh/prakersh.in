@@ -1,11 +1,11 @@
 /**
  * Zen Portfolio - Print Styles
- * Compact 2-page resume layout
+ * Clean 2-page resume layout - Full content, readable spacing
  */
 
 @page {
     size: A4;
-    margin: 0.4cm 0.5cm;
+    margin: 0.5cm;
 }
 
 @media print {
@@ -21,8 +21,8 @@
     html, body {
         height: auto !important;
         font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif !important;
-        font-size: 8pt !important;
-        line-height: 1.3 !important;
+        font-size: 9pt !important;
+        line-height: 1.4 !important;
         color: #333 !important;
         background: #fff !important;
         margin: 0 !important;
@@ -40,7 +40,6 @@
     .social-links,
     .btn,
     .skills-legend,
-    .project-card__link,
     .project-card__actions,
     .achievement-card__link,
     .bento-stats,
@@ -48,9 +47,6 @@
     .experience-card__duration,
     .profile-hero__status,
     .profile-hero__actions,
-    .bento-card__icon,
-    .project-card__icon,
-    .achievement-card__icon,
     nav {
         display: none !important;
     }
@@ -73,38 +69,37 @@
 
     /* Sections */
     .bento-section {
-        margin-bottom: 0.25cm !important;
-        page-break-inside: avoid !important;
+        margin-bottom: 0.4cm !important;
         display: block !important;
     }
 
     .section-header {
-        margin-bottom: 0.1cm !important;
+        margin-bottom: 0.15cm !important;
     }
 
     .section-title {
         display: flex !important;
         align-items: center !important;
-        gap: 0.1cm !important;
-        margin-bottom: 0.08cm !important;
-        border-bottom: 1px solid #7C9A82 !important;
-        padding-bottom: 0.05cm !important;
+        gap: 0.15cm !important;
+        margin-bottom: 0.1cm !important;
+        border-bottom: 1.5px solid #7C9A82 !important;
+        padding-bottom: 0.08cm !important;
     }
 
     .section-title__icon {
-        width: 0.4cm !important;
-        height: 0.4cm !important;
+        width: 0.45cm !important;
+        height: 0.45cm !important;
         background: #f0f0f0 !important;
         border-radius: 2px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        font-size: 6pt !important;
+        font-size: 7pt !important;
         color: #7C9A82 !important;
     }
 
     .section-title__text {
-        font-size: 9pt !important;
+        font-size: 10pt !important;
         font-weight: 600 !important;
         color: #2D3E2D !important;
         margin: 0 !important;
@@ -119,18 +114,25 @@
         background: #fff !important;
         border: none !important;
         border-radius: 0 !important;
-        padding: 0.1cm 0 !important;
+        padding: 0.15cm 0 !important;
         margin: 0 !important;
         box-shadow: none !important;
         width: 100% !important;
+    }
+
+    /* Hide card icons in print */
+    .bento-card__icon,
+    .project-card__icon,
+    .achievement-card__icon {
+        display: none !important;
     }
 
     /* ===== PROFILE SECTION ===== */
     #profile {
         margin-top: 0 !important;
         border-bottom: 2px solid #7C9A82 !important;
-        padding-bottom: 0.15cm !important;
-        margin-bottom: 0.2cm !important;
+        padding-bottom: 0.3cm !important;
+        margin-bottom: 0.3cm !important;
     }
 
     .profile-hero {
@@ -141,9 +143,9 @@
     .profile-hero__header {
         display: flex !important;
         flex-direction: row !important;
-        gap: 0.3cm !important;
+        gap: 0.4cm !important;
         align-items: flex-start !important;
-        margin-bottom: 0.1cm !important;
+        margin-bottom: 0.2cm !important;
     }
 
     .profile-hero__image-wrapper {
@@ -151,10 +153,10 @@
     }
 
     .profile-hero__image {
-        width: 2cm !important;
-        height: 2.4cm !important;
+        width: 2.2cm !important;
+        height: 2.6cm !important;
         object-fit: cover !important;
-        border-radius: 3px !important;
+        border-radius: 4px !important;
         border: 1px solid #ddd !important;
     }
 
@@ -164,69 +166,79 @@
     }
 
     .profile-hero__name {
-        font-size: 14pt !important;
+        font-size: 16pt !important;
         font-weight: 700 !important;
         color: #2D3E2D !important;
         margin: 0 !important;
-        line-height: 1.1 !important;
+        line-height: 1.2 !important;
     }
 
     .profile-hero__title {
-        font-size: 9pt !important;
+        font-size: 10pt !important;
         font-weight: 500 !important;
         color: #7C9A82 !important;
-        margin: 0.05cm 0 0.1cm 0 !important;
+        margin: 0.1cm 0 0.15cm 0 !important;
     }
 
     .profile-hero__summary {
-        font-size: 7pt !important;
+        font-size: 8pt !important;
         color: #444 !important;
-        line-height: 1.25 !important;
-        margin: 0.1cm 0 !important;
+        line-height: 1.35 !important;
+        margin: 0.15cm 0 !important;
         max-width: none !important;
     }
 
-    /* Contact Grid - Inline */
+    /* Contact Info - Clean Grid Layout */
     .profile-hero__contact {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 0.08cm 0.25cm !important;
-        padding-top: 0.1cm !important;
-        margin-top: 0.1cm !important;
-        border-top: 1px solid #e5e5e5 !important;
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 0.2cm 0.4cm !important;
+        padding-top: 0.2cm !important;
+        margin-top: 0.15cm !important;
+        border-top: 1px solid #e0e0e0 !important;
     }
 
     .contact-item {
         display: flex !important;
         align-items: center !important;
-        gap: 0.08cm !important;
-        font-size: 7pt !important;
+        gap: 0.12cm !important;
+        font-size: 8pt !important;
         color: #333 !important;
         text-decoration: none !important;
         background: none !important;
-        padding: 0 !important;
+        padding: 0.08cm 0 !important;
         border: none !important;
     }
 
     .contact-item__icon {
-        width: auto !important;
-        height: auto !important;
-        background: none !important;
+        width: 0.35cm !important;
+        height: 0.35cm !important;
+        min-width: 0.35cm !important;
+        background: #f5f5f5 !important;
+        border-radius: 2px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         color: #7C9A82 !important;
-        font-size: 7pt !important;
-        display: inline !important;
+        font-size: 6pt !important;
     }
 
     .contact-item__text {
-        display: inline !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
     }
 
     .contact-item__label {
-        display: none !important;
+        font-size: 6pt !important;
+        color: #888 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.02em !important;
     }
 
     .contact-item__value {
         color: #333 !important;
+        font-size: 7.5pt !important;
     }
 
     /* ===== EXPERIENCE SECTION ===== */
@@ -235,21 +247,22 @@
     }
 
     .experience-card {
-        padding: 0.1cm 0 !important;
+        padding: 0.15cm 0 !important;
         border-bottom: 1px solid #eee !important;
         margin-bottom: 0.1cm !important;
     }
 
     .experience-card:last-child {
         border-bottom: none !important;
+        margin-bottom: 0 !important;
     }
 
     .experience-card__header {
         display: flex !important;
         justify-content: space-between !important;
         align-items: flex-start !important;
-        margin-bottom: 0.05cm !important;
-        gap: 0.2cm !important;
+        margin-bottom: 0.08cm !important;
+        gap: 0.3cm !important;
     }
 
     .experience-card__meta {
@@ -257,7 +270,7 @@
     }
 
     .experience-card__title {
-        font-size: 9pt !important;
+        font-size: 10pt !important;
         font-weight: 600 !important;
         color: #2D3E2D !important;
         margin: 0 !important;
@@ -265,7 +278,7 @@
     }
 
     .experience-card__company {
-        font-size: 8pt !important;
+        font-size: 9pt !important;
         color: #7C9A82 !important;
         margin: 0 !important;
         display: inline !important;
@@ -280,7 +293,7 @@
     }
 
     .experience-card__date {
-        font-size: 7pt !important;
+        font-size: 8pt !important;
         color: #666 !important;
         background: none !important;
         padding: 0 !important;
@@ -289,9 +302,9 @@
     }
 
     .experience-card__location {
-        font-size: 7pt !important;
-        color: #888 !important;
-        margin: 0.02cm 0 !important;
+        font-size: 7.5pt !important;
+        color: #777 !important;
+        margin: 0.05cm 0 !important;
     }
 
     .experience-card__location i {
@@ -299,19 +312,19 @@
     }
 
     .experience-card__list {
-        margin: 0.05cm 0 0 0 !important;
-        padding-left: 0.25cm !important;
+        margin: 0.1cm 0 0 0 !important;
+        padding-left: 0.3cm !important;
         columns: 2 !important;
-        column-gap: 0.25cm !important;
+        column-gap: 0.4cm !important;
     }
 
     .experience-card__list li {
-        font-size: 6.5pt !important;
+        font-size: 7.5pt !important;
         color: #444 !important;
-        margin-bottom: 0.02cm !important;
-        line-height: 1.2 !important;
+        margin-bottom: 0.05cm !important;
+        line-height: 1.3 !important;
         break-inside: avoid !important;
-        padding-left: 0.15cm !important;
+        padding-left: 0.2cm !important;
         position: relative !important;
     }
 
@@ -324,7 +337,7 @@
 
     /* ===== EDUCATION SECTION ===== */
     .education-card {
-        padding: 0.08cm 0 !important;
+        padding: 0.1cm 0 !important;
         border: none !important;
     }
 
@@ -332,20 +345,20 @@
         display: flex !important;
         justify-content: space-between !important;
         align-items: flex-start !important;
-        margin-bottom: 0.03cm !important;
+        margin-bottom: 0.05cm !important;
     }
 
     .education-card__degree {
-        font-size: 8pt !important;
+        font-size: 9pt !important;
         font-weight: 600 !important;
         color: #2D3E2D !important;
         margin: 0 !important;
     }
 
     .education-card__institution {
-        font-size: 7pt !important;
+        font-size: 8pt !important;
         color: #7C9A82 !important;
-        margin: 0 !important;
+        margin: 0.03cm 0 0 0 !important;
     }
 
     .education-card__institution i {
@@ -353,12 +366,13 @@
     }
 
     .education-card__meta {
-        font-size: 7pt !important;
+        font-size: 8pt !important;
         color: #666 !important;
+        text-align: right !important;
     }
 
     .education-card__location {
-        font-size: 7pt !important;
+        font-size: 7.5pt !important;
         color: #666 !important;
     }
 
@@ -367,98 +381,124 @@
     }
 
     .education-card__list {
+        margin: 0.08cm 0 0 0 !important;
+        padding-left: 0.3cm !important;
+    }
+
+    .education-card__list li {
+        font-size: 7.5pt !important;
+        color: #444 !important;
+        margin-bottom: 0.03cm !important;
+        line-height: 1.3 !important;
+    }
+
+    .education-card__list li::before {
         display: none !important;
     }
 
     /* ===== SKILLS SECTION ===== */
     .bento-grid--skills {
         display: flex !important;
-        gap: 0.3cm !important;
+        gap: 0.4cm !important;
     }
 
     .skills-card {
         flex: 1 !important;
-        padding: 0.08cm 0 !important;
+        padding: 0.1cm 0 !important;
         border: none !important;
     }
 
     .skills-card__header {
-        margin-bottom: 0.05cm !important;
+        margin-bottom: 0.08cm !important;
     }
 
     .skills-card__title,
     .skills-category__title {
-        font-size: 7pt !important;
+        font-size: 8pt !important;
         font-weight: 600 !important;
         color: #2D3E2D !important;
-        margin: 0 0 0.05cm 0 !important;
+        margin: 0 0 0.08cm 0 !important;
         text-transform: uppercase !important;
     }
 
     .skill-tags {
         display: flex !important;
         flex-wrap: wrap !important;
-        gap: 0.04cm !important;
+        gap: 0.06cm !important;
     }
 
     .skill-tag {
-        font-size: 6pt !important;
-        padding: 0.02cm 0.08cm !important;
+        font-size: 7pt !important;
+        padding: 0.04cm 0.1cm !important;
+        padding-left: 0.15cm !important;
         background: #f5f5f5 !important;
         border: none !important;
         border-radius: 2px !important;
         color: #444 !important;
+        border-left: 2px solid #ccc !important;
     }
 
-    /* ===== PROJECTS SECTION - Limit to 9 ===== */
+    .skill-tag--expert {
+        border-left-color: #4A7A54 !important;
+        font-weight: 600 !important;
+        color: #2D3E2D !important;
+    }
+
+    .skill-tag--advanced {
+        border-left-color: #7C9A82 !important;
+        font-weight: 500 !important;
+    }
+
+    .skill-tag--intermediate {
+        border-left-color: #6A9BC0 !important;
+        color: #4A6B8A !important;
+    }
+
+    .skill-tag--beginner {
+        border-left-color: #B0B0B0 !important;
+        color: #666 !important;
+    }
+
+    /* ===== PROJECTS SECTION - Show ALL ===== */
     .bento-grid--projects {
         display: flex !important;
         flex-wrap: wrap !important;
-        gap: 0.12cm !important;
+        gap: 0.15cm !important;
     }
 
     .project-card {
-        width: calc(33.33% - 0.08cm) !important;
-        flex: 0 0 calc(33.33% - 0.08cm) !important;
-        padding: 0.08cm !important;
+        width: calc(33.33% - 0.1cm) !important;
+        flex: 0 0 calc(33.33% - 0.1cm) !important;
+        padding: 0.1cm !important;
         border: none !important;
         border-left: 2px solid #7C9A82 !important;
         page-break-inside: avoid !important;
     }
 
-    /* Hide projects after 9th */
-    .project-card:nth-child(n+10) {
-        display: none !important;
-    }
-
     .project-card__title {
-        font-size: 7pt !important;
+        font-size: 8pt !important;
         font-weight: 600 !important;
         color: #2D3E2D !important;
         margin: 0 !important;
-        line-height: 1.2 !important;
+        line-height: 1.25 !important;
     }
 
     .project-card__description {
-        font-size: 6pt !important;
+        font-size: 6.5pt !important;
         color: #555 !important;
-        line-height: 1.2 !important;
-        margin: 0.03cm 0 !important;
-        display: -webkit-box !important;
-        -webkit-line-clamp: 2 !important;
-        -webkit-box-orient: vertical !important;
-        overflow: hidden !important;
+        line-height: 1.25 !important;
+        margin: 0.05cm 0 !important;
     }
 
     .project-card__tech {
         display: flex !important;
         flex-wrap: wrap !important;
-        gap: 0.02cm !important;
+        gap: 0.03cm !important;
     }
 
     .tech-badge {
-        font-size: 5pt !important;
-        padding: 0.01cm 0.04cm !important;
+        font-size: 5.5pt !important;
+        padding: 0.02cm 0.06cm !important;
         background: #f0f0f0 !important;
         border: none !important;
         border-radius: 1px !important;
@@ -469,44 +509,40 @@
     .bento-grid--certificates {
         display: flex !important;
         flex-wrap: wrap !important;
-        gap: 0.08cm 0.15cm !important;
+        gap: 0.12cm 0.2cm !important;
     }
 
     .certificate-card {
-        width: calc(50% - 0.08cm) !important;
-        flex: 0 0 calc(50% - 0.08cm) !important;
-        padding: 0.06cm !important;
+        width: calc(50% - 0.1cm) !important;
+        flex: 0 0 calc(50% - 0.1cm) !important;
+        padding: 0.1cm !important;
         border: none !important;
         border-left: 2px solid #7C9A82 !important;
     }
 
     .certificate-card__title {
-        font-size: 7pt !important;
+        font-size: 8pt !important;
         font-weight: 600 !important;
         color: #2D3E2D !important;
         margin: 0 !important;
-        line-height: 1.2 !important;
+        line-height: 1.25 !important;
     }
 
     .certificate-card__issuer {
-        font-size: 6pt !important;
+        font-size: 7pt !important;
         color: #7C9A82 !important;
-        margin: 0.02cm 0 !important;
+        margin: 0.03cm 0 !important;
     }
 
     .certificate-card__description {
-        font-size: 6pt !important;
+        font-size: 6.5pt !important;
         color: #555 !important;
-        line-height: 1.15 !important;
-        margin: 0 !important;
-        display: -webkit-box !important;
-        -webkit-line-clamp: 2 !important;
-        -webkit-box-orient: vertical !important;
-        overflow: hidden !important;
+        line-height: 1.2 !important;
+        margin: 0.03cm 0 !important;
     }
 
     .certificate-card__date {
-        font-size: 5pt !important;
+        font-size: 6pt !important;
         color: #888 !important;
     }
 
@@ -514,13 +550,13 @@
     .bento-grid--achievements {
         display: flex !important;
         flex-wrap: wrap !important;
-        gap: 0.08cm 0.15cm !important;
+        gap: 0.1cm 0.2cm !important;
     }
 
     .achievement-card {
-        width: calc(33.33% - 0.1cm) !important;
-        flex: 0 0 calc(33.33% - 0.1cm) !important;
-        padding: 0.06cm !important;
+        width: calc(33.33% - 0.14cm) !important;
+        flex: 0 0 calc(33.33% - 0.14cm) !important;
+        padding: 0.08cm !important;
         border: none !important;
         display: block !important;
     }
@@ -530,21 +566,21 @@
     }
 
     .achievement-card__title {
-        font-size: 7pt !important;
+        font-size: 8pt !important;
         font-weight: 600 !important;
         color: #2D3E2D !important;
         margin: 0 !important;
     }
 
     .achievement-card__description {
-        font-size: 6pt !important;
+        font-size: 7pt !important;
         color: #555 !important;
-        line-height: 1.15 !important;
-        margin: 0.02cm 0 !important;
+        line-height: 1.25 !important;
+        margin: 0.03cm 0 !important;
     }
 
     .achievement-card__meta {
-        font-size: 5pt !important;
+        font-size: 6pt !important;
         color: #888 !important;
     }
 
@@ -573,7 +609,7 @@
         page-break-inside: avoid !important;
     }
 
-    /* Force Projects section to page 2 if needed */
+    /* Allow page break before projects if needed */
     #projects {
         page-break-before: auto !important;
     }
