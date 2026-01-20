@@ -165,6 +165,22 @@
         min-width: 0 !important;
     }
 
+    .profile-hero__qr-wrapper {
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+    }
+
+    .profile-hero__qr-code {
+        width: 2.2cm !important;
+        height: 2.2cm !important;
+        border-radius: 2px !important;
+        border: 1px solid #ddd !important;
+        background: #fff !important;
+        padding: 0.05cm !important;
+    }
+
     .profile-hero__name {
         font-size: 16pt !important;
         font-weight: 700 !important;

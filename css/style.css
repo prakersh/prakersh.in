@@ -645,6 +645,29 @@ ul, ol {
     min-width: 0;
 }
 
+.profile-hero__qr-wrapper {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.profile-hero__qr-code {
+    width: 100px;
+    height: 100px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    padding: var(--space-xs);
+}
+
+@media (min-width: 768px) {
+    .profile-hero__qr-code {
+        width: 120px;
+        height: 120px;
+    }
+}
+
 .profile-hero__name {
     font-size: var(--text-2xl);
     font-weight: var(--weight-bold);

@@ -104,6 +104,21 @@ $certCount = $stmt->fetchColumn();
                     </div>
                 </div>
             </div>
+
+            <?php
+            // Generate QR code for website URL
+            if (!empty($profile['website'])) {
+                $websiteUrl = htmlspecialchars(ensureHttps($profile['website']), ENT_QUOTES, 'UTF-8');
+                // Use QR Server API to generate QR code
+                $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' . urlencode($websiteUrl);
+            ?>
+            <div class="profile-hero__qr-wrapper">
+                <img src="<?php echo $qrCodeUrl; ?>"
+                     alt="QR Code for <?php echo $websiteUrl; ?>"
+                     class="profile-hero__qr-code"
+                     loading="eager">
+            </div>
+            <?php } ?>
         </div>
 
         <!-- Summary - Full Width -->
