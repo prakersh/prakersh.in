@@ -77,9 +77,24 @@
                 </nav>
 
                 <div class="site-header__actions">
-                    <button class="theme-toggle d-print-none" id="theme-toggle" aria-label="Toggle theme">
-                        <i class="fas fa-moon"></i>
-                    </button>
+                    <div class="theme-selector d-print-none">
+                        <select id="theme-select" class="theme-select" aria-label="Select theme">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="peach">Peach</option>
+                            <option value="blue">Blue</option>
+                            <option value="forest">Forest</option>
+                            <option value="berry">Berry</option>
+                            <option value="monochrome">Mono</option>
+                            <option value="sunset">Sunset</option>
+                            <option value="mint">Mint</option>
+                            <option value="navy">Navy</option>
+                            <option value="matrix">Matrix</option>
+                        </select>
+                        <button class="theme-next-btn" id="theme-next-btn" aria-label="Next theme">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
                     <a href="#" class="btn btn--primary btn--sm d-print-none" id="download-resume-btn">
                         <i class="fas fa-download"></i>
                         <span class="visually-hidden-mobile">Resume</span>

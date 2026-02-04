@@ -79,9 +79,21 @@
     background: linear-gradient(135deg, #9AB89F, #C9B8A8);
 }
 
-/* Theme toggle icon adjustment */
-.theme-toggle i {
+/* Theme selector styles */
+.theme-selector i {
     color: var(--text-secondary);
+}
+
+.theme-next-btn {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+.theme-next-btn:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: var(--bg-primary);
 }
 
 /* Selection color */

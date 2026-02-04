@@ -236,19 +236,31 @@
     text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
 }
 
-.theme-toggle {
+.theme-selector {
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     color: var(--accent-primary);
 }
 
-.theme-toggle:hover {
+.theme-selector:hover {
     background: var(--accent-muted);
     border-color: var(--accent-primary);
     box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
 }
 
-.theme-toggle i {
+.theme-next-btn {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+.theme-next-btn:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
+}
+
+.theme-selector i {
     color: var(--accent-primary);
     text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
 }
