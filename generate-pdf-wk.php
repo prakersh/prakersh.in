@@ -113,10 +113,10 @@ try {
         '--encoding UTF-8',
         '--enable-local-file-access',
         '--no-stop-slow-scripts',
-        '--javascript-delay 1000',
-        '--enable-smart-shrinking',     // Enable smart shrinking for better content fitting
-        '--dpi 96',                     // Screen DPI for consistent rendering
-        '--zoom 1.0',                   // Default zoom level
+        '--javascript-delay 2000',      // Wait for fonts to fully load
+        '--disable-smart-shrinking',    // Disable shrinking to match browser print exactly (2 pages)
+        '--dpi 72',                     // Match browser print DPI (72)
+        '--zoom 1.0',                   // No zoom - render at 100%
         '--image-quality 100',          // High quality images
         '--enable-forms',               // Enable form fields (helps with text rendering)
         '--print-media-type'            // Use print media type for better text handling
