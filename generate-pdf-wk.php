@@ -113,11 +113,13 @@ try {
         '--encoding UTF-8',
         '--enable-local-file-access',
         '--no-stop-slow-scripts',
-        '--javascript-delay 500',
-        '--disable-smart-shrinking',    // CRITICAL: Prevent auto-shrinking that compresses content
-        '--dpi 72',                     // Standard print DPI (72) to match browser print output
-        '--zoom 1.33',                  // Compensate for lower DPI to maintain visual size (96/72)
-        '--image-quality 100'           // High quality images
+        '--javascript-delay 1000',
+        '--enable-smart-shrinking',     // Enable smart shrinking for better content fitting
+        '--dpi 96',                     // Screen DPI for consistent rendering
+        '--zoom 1.0',                   // Default zoom level
+        '--image-quality 100',          // High quality images
+        '--enable-forms',               // Enable form fields (helps with text rendering)
+        '--print-media-type'            // Use print media type for better text handling
     ];
     
     $command = escapeshellcmd($wkhtmltopdf) . ' ' . implode(' ', $options) . ' ' . 
