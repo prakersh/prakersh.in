@@ -51,33 +51,8 @@ try {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <!-- Base CSS - using absolute file:// paths for wkhtmltopdf -->
         <link rel="stylesheet" href="file://<?php echo $baseDir; ?>/css/style.css">
-        <!-- Print CSS - loaded directly (not media="print") since we want it always applied -->
+        <!-- Print CSS - loaded directly; --print-media-type flag triggers @media print rules -->
         <link rel="stylesheet" href="file://<?php echo $baseDir; ?>/css/print.css">
-        <style>
-            /* Force print styles to apply for PDF generation */
-            /* These mirror the critical @media print rules from print.css */
-            html, body {
-                width: 100% !important;
-                height: auto !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                background: #fff !important;
-                font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif !important;
-                font-size: 9pt !important;
-                line-height: 1.4 !important;
-                color: #333 !important;
-                overflow: visible !important;
-            }
-
-            /* Hide non-print elements */
-            .d-print-none, .site-header, .site-footer, .theme-selector,
-            .mobile-menu-toggle, .mobile-nav, .social-links, .btn,
-            .skills-legend, .project-card__actions, .achievement-card__link,
-            .bento-stats, .experience-card__duration-bar, .experience-card__duration,
-            .profile-hero__status, .profile-hero__actions, nav {
-                display: none !important;
-            }
-        </style>
     </head>
     <body class="is-printing">
         <div class="zen-container">
@@ -113,11 +88,13 @@ try {
         '--encoding UTF-8',
         '--enable-local-file-access',
         '--no-stop-slow-scripts',
-        '--javascript-delay 500',
-        '--disable-smart-shrinking',    // CRITICAL: Prevent auto-shrinking that compresses content
-        '--dpi 96',                     // Match screen DPI for consistent sizing
+        '--javascript-delay 2000',      // Wait for fonts to fully load
+        '--disable-smart-shrinking',    // Disable shrinking to match browser print exactly (2 pages)
+        '--dpi 72',                     // Match browser print DPI (72)
         '--zoom 1.0',                   // No zoom - render at 100%
-        '--image-quality 100'           // High quality images
+        '--image-quality 100',          // High quality images
+        '--enable-forms',               // Enable form fields (helps with text rendering)
+        '--print-media-type'            // Use print media type for better text handling
     ];
     
     $command = escapeshellcmd($wkhtmltopdf) . ' ' . implode(' ', $options) . ' ' . 
