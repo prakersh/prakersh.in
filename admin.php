@@ -14,12 +14,77 @@ function validateCsrfToken($token) {
     return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
 }
 
+// Rate Limiting Configuration
+define('MAX_LOGIN_ATTEMPTS', 5);
+define('LOGIN_ATTEMPT_TIMEOUT', 900); // 15 minutes in seconds
+
+function checkRateLimit($ip) {
+    $rateLimitFile = __DIR__ . '/data/ratelimit_' . md5($ip) . '.json';
+    
+    if (!file_exists($rateLimitFile)) {
+        return ['allowed' => true, 'remaining' => MAX_LOGIN_ATTEMPTS];
+    }
+    
+    $data = json_decode(file_get_contents($rateLimitFile), true);
+    $timeSinceLastAttempt = time() - $data['last_attempt'];
+    
+    // Reset if timeout has passed
+    if ($timeSinceLastAttempt > LOGIN_ATTEMPT_TIMEOUT) {
+        @unlink($rateLimitFile);
+        return ['allowed' => true, 'remaining' => MAX_LOGIN_ATTEMPTS];
+    }
+    
+    // Check if max attempts exceeded
+    if ($data['attempts'] >= MAX_LOGIN_ATTEMPTS) {
+        $remainingTime = LOGIN_ATTEMPT_TIMEOUT - $timeSinceLastAttempt;
+        return [
+            'allowed' => false,
+            'remaining' => 0,
+            'remaining_time' => ceil($remainingTime / 60) // in minutes
+        ];
+    }
+    
+    return ['allowed' => true, 'remaining' => MAX_LOGIN_ATTEMPTS - $data['attempts']];
+}
+
+function recordFailedAttempt($ip) {
+    $rateLimitFile = __DIR__ . '/data/ratelimit_' . md5($ip) . '.json';
+    
+    if (file_exists($rateLimitFile)) {
+        $data = json_decode(file_get_contents($rateLimitFile), true);
+        $data['attempts']++;
+        $data['last_attempt'] = time();
+    } else {
+        $data = [
+            'attempts' => 1,
+            'last_attempt' => time()
+        ];
+    }
+    
+    file_put_contents($rateLimitFile, json_encode($data));
+}
+
+function clearRateLimit($ip) {
+    $rateLimitFile = __DIR__ . '/data/ratelimit_' . md5($ip) . '.json';
+    if (file_exists($rateLimitFile)) {
+        @unlink($rateLimitFile);
+    }
+}
+
 // Authentication logic using database
 $is_logged_in = false;
 $login_error = '';
 $password_message = '';
 
 if (isset($_POST['login'])) {
+    $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    
+    // Check rate limit before processing login
+    $rateLimit = checkRateLimit($clientIp);
+    if (!$rateLimit['allowed']) {
+        $login_error = "Too many failed login attempts. Please try again in {$rateLimit['remaining_time']} minutes.";
+        error_log("Rate limit exceeded for login attempt from IP: " . $clientIp);
+    } else {
     $pdo = getDbConnection();
     $stmt = $pdo->prepare('SELECT * FROM admin_settings WHERE username = ?');
     $stmt->execute([$_POST['username']]);
@@ -47,23 +112,30 @@ if (isset($_POST['login'])) {
         }
     }
     
-    if ($passwordValid) {
-        // Regenerate session ID to prevent session fixation attacks
-        session_regenerate_id(true);
+        if ($passwordValid) {
+            // Regenerate session ID to prevent session fixation attacks
+            session_regenerate_id(true);
 
-        $_SESSION['admin_logged_in'] = true;
-        $_SESSION['admin_username'] = $user['username'];
-        $_SESSION['last_activity'] = time(); // Add session timeout tracking
-        $is_logged_in = true;
+            $_SESSION['admin_logged_in'] = true;
+            $_SESSION['admin_username'] = $user['username'];
+            $_SESSION['last_activity'] = time(); // Add session timeout tracking
+            $is_logged_in = true;
 
-        // Log successful login
-        error_log("Admin login successful for user: " . $user['username'] . " from IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
-    } else {
-        $login_error = "Invalid credentials";
-        
-        // Log failed login attempt
-        error_log("Failed admin login attempt for username: " . ($_POST['username'] ?? 'unknown') . " from IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
-    }
+            // Clear rate limit on successful login
+            clearRateLimit($clientIp);
+
+            // Log successful login
+            error_log("Admin login successful for user: " . $user['username'] . " from IP: " . $clientIp);
+        } else {
+            // Record failed attempt
+            recordFailedAttempt($clientIp);
+            
+            $login_error = "Invalid credentials";
+            
+            // Log failed login attempt
+            error_log("Failed admin login attempt for username: " . ($_POST['username'] ?? 'unknown') . " from IP: " . $clientIp);
+        }
+    } // End rate limit check
 } elseif (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
     // Check session timeout (30 minutes)
     if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
@@ -99,7 +171,7 @@ if ($is_logged_in) {
     // Change Theme
     if (isset($_POST['change_theme'])) {
         $theme = htmlspecialchars(trim($_POST['theme'] ?? ''), ENT_QUOTES, 'UTF-8');
-        if (in_array($theme, ['light', 'dark', 'blue', 'peach'])) { // Whitelist allowed themes (Zen theme system)
+        if (in_array($theme, ['light', 'dark', 'blue', 'peach', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy', 'matrix'])) { // Whitelist allowed themes (Zen theme system)
             $stmt = $pdo->prepare('UPDATE admin_settings SET theme = ? WHERE id = 1');
             $stmt->execute([$theme]);
             $message = "Theme updated successfully!";
@@ -111,7 +183,7 @@ if ($is_logged_in) {
     // Also handle the new save_theme button name
     if (isset($_POST['save_theme'])) {
         $theme = htmlspecialchars(trim($_POST['theme'] ?? ''), ENT_QUOTES, 'UTF-8');
-        if (in_array($theme, ['light', 'dark', 'blue', 'peach'])) { // Whitelist allowed themes (Zen theme system)
+        if (in_array($theme, ['light', 'dark', 'blue', 'peach', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy', 'matrix'])) { // Whitelist allowed themes (Zen theme system)
             $stmt = $pdo->prepare('UPDATE admin_settings SET theme = ? WHERE id = 1');
             $stmt->execute([$theme]);
             $message = "Theme updated successfully!";
@@ -549,6 +621,15 @@ if ($is_logged_in) {
                             <?php if (isset($_GET['password_changed'])): ?>
                                 <div class="alert alert-success">Password updated successfully! Please log in with your new password.</div>
                             <?php endif; ?>
+                            <?php if (!$is_logged_in && !isset($login_error)): ?>
+                                <?php $rateLimit = checkRateLimit($_SERVER['REMOTE_ADDR'] ?? 'unknown'); ?>
+                                <?php if ($rateLimit['remaining'] < MAX_LOGIN_ATTEMPTS && $rateLimit['remaining'] > 0): ?>
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        Warning: <?php echo $rateLimit['remaining']; ?> login attempt(s) remaining. Please log in carefully.
+                                    </div>
+                                <?php endif; ?>
+                            <?php endif; ?>
                             <?php if (isset($_GET['timeout'])): ?>
                                 <div class="alert alert-warning">Your session has expired for security reasons. Please log in again.</div>
                             <?php endif; ?>
@@ -971,10 +1052,17 @@ if ($is_logged_in) {
                                                 <div class="mb-3">
                                                     <label for="theme" class="form-label">Select Theme</label>
                                                     <select class="form-select" id="theme" name="theme">
+                                                        <option value="blue" <?php echo ($current_theme == 'blue') ? 'selected' : ''; ?>>Blue (Ocean Zen)</option>
+                                                        <option value="matrix" <?php echo ($current_theme == 'matrix') ? 'selected' : ''; ?>>Matrix (Digital Rain)</option>
                                                         <option value="light" <?php echo ($current_theme == 'light') ? 'selected' : ''; ?>>Light (Morning Mist)</option>
                                                         <option value="dark" <?php echo ($current_theme == 'dark') ? 'selected' : ''; ?>>Dark (Midnight Garden)</option>
-                                                        <option value="blue" <?php echo ($current_theme == 'blue') ? 'selected' : ''; ?>>Blue (Ocean Zen)</option>
                                                         <option value="peach" <?php echo ($current_theme == 'peach') ? 'selected' : ''; ?>>Peach (Sunset Calm)</option>
+                                                        <option value="forest" <?php echo ($current_theme == 'forest') ? 'selected' : ''; ?>>Forest (Verdant Canopy)</option>
+                                                        <option value="berry" <?php echo ($current_theme == 'berry') ? 'selected' : ''; ?>>Berry (Berry Cream)</option>
+                                                        <option value="monochrome" <?php echo ($current_theme == 'monochrome') ? 'selected' : ''; ?>>Monochrome (Pure Contrast)</option>
+                                                        <option value="sunset" <?php echo ($current_theme == 'sunset') ? 'selected' : ''; ?>>Sunset (Coral Horizon)</option>
+                                                        <option value="mint" <?php echo ($current_theme == 'mint') ? 'selected' : ''; ?>>Mint (Fresh Mint)</option>
+                                                        <option value="navy" <?php echo ($current_theme == 'navy') ? 'selected' : ''; ?>>Navy (Royal Navy)</option>
                                                     </select>
                                                 </div>
                                                 

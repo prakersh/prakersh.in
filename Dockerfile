@@ -25,8 +25,8 @@ RUN apt-get update && apt-get install -y \
 
 # Install wkhtmltopdf from official release (not available in apt)
 RUN wget -q https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltopdf_0.12.6.1-3.bookworm_amd64.deb \
-    && (dpkg -i wkhtmltopdf_0.12.6.1-3.bookworm_amd64.deb \
-    || apt-get install -f -y) \
+    && dpkg -i wkhtmltopdf_0.12.6.1-3.bookworm_amd64.deb \
+    || apt-get install -f -y \
     && rm wkhtmltopdf_0.12.6.1-3.bookworm_amd64.deb
 
 # Copy application files
