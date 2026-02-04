@@ -8,7 +8,7 @@
 
     // Theme System
     const ThemeManager = {
-        themes: ['light', 'dark', 'peach', 'blue', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy', 'matrix'],
+        themes: ['blue', 'matrix', 'light', 'dark', 'peach', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy'],
         currentIndex: 0,
         storageKey: 'zen-theme',
 

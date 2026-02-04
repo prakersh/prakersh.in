@@ -971,9 +971,10 @@ if ($is_logged_in) {
                                                 <div class="mb-3">
                                                     <label for="theme" class="form-label">Select Theme</label>
                                                     <select class="form-select" id="theme" name="theme">
+                                                        <option value="blue" <?php echo ($current_theme == 'blue') ? 'selected' : ''; ?>>Blue (Ocean Zen)</option>
+                                                        <option value="matrix" <?php echo ($current_theme == 'matrix') ? 'selected' : ''; ?>>Matrix (Digital Rain)</option>
                                                         <option value="light" <?php echo ($current_theme == 'light') ? 'selected' : ''; ?>>Light (Morning Mist)</option>
                                                         <option value="dark" <?php echo ($current_theme == 'dark') ? 'selected' : ''; ?>>Dark (Midnight Garden)</option>
-                                                        <option value="blue" <?php echo ($current_theme == 'blue') ? 'selected' : ''; ?>>Blue (Ocean Zen)</option>
                                                         <option value="peach" <?php echo ($current_theme == 'peach') ? 'selected' : ''; ?>>Peach (Sunset Calm)</option>
                                                         <option value="forest" <?php echo ($current_theme == 'forest') ? 'selected' : ''; ?>>Forest (Verdant Canopy)</option>
                                                         <option value="berry" <?php echo ($current_theme == 'berry') ? 'selected' : ''; ?>>Berry (Berry Cream)</option>
@@ -981,7 +982,6 @@ if ($is_logged_in) {
                                                         <option value="sunset" <?php echo ($current_theme == 'sunset') ? 'selected' : ''; ?>>Sunset (Coral Horizon)</option>
                                                         <option value="mint" <?php echo ($current_theme == 'mint') ? 'selected' : ''; ?>>Mint (Fresh Mint)</option>
                                                         <option value="navy" <?php echo ($current_theme == 'navy') ? 'selected' : ''; ?>>Navy (Royal Navy)</option>
-                                                        <option value="matrix" <?php echo ($current_theme == 'matrix') ? 'selected' : ''; ?>>Matrix (Digital Rain)</option>
                                                     </select>
                                                 </div>
                                                 

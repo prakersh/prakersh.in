@@ -79,17 +79,17 @@
                 <div class="site-header__actions">
                     <div class="theme-selector d-print-none">
                         <select id="theme-select" class="theme-select" aria-label="Select theme">
+                            <option value="blue">Blue</option>
+                            <option value="matrix">Matrix</option>
                             <option value="light">Light</option>
                             <option value="dark">Dark</option>
                             <option value="peach">Peach</option>
-                            <option value="blue">Blue</option>
                             <option value="forest">Forest</option>
                             <option value="berry">Berry</option>
                             <option value="monochrome">Mono</option>
                             <option value="sunset">Sunset</option>
                             <option value="mint">Mint</option>
                             <option value="navy">Navy</option>
-                            <option value="matrix">Matrix</option>
                         </select>
                         <button class="theme-next-btn" id="theme-next-btn" aria-label="Next theme">
                             <i class="fas fa-chevron-right"></i>
