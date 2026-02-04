@@ -1,0 +1,339 @@
+/*
+ * Zen Portfolio - Matrix Theme (Digital Rain)
+ * Matrix-inspired aesthetic with pure black base and neon green accents
+ * Evokes the iconic green-on-black terminal/code aesthetic
+ */
+
+:root {
+    /* Matrix Theme Colors - Pure black with neon green */
+    --bg-primary: #000000;
+    --bg-secondary: #050505;
+    --bg-tertiary: #0A0A0A;
+    --bg-card: #080808;
+
+    --text-primary: #00FF41;
+    --text-secondary: #00CC33;
+    --text-tertiary: #009926;
+
+    --accent-primary: #00FF41;
+    --accent-secondary: #39FF14;
+    --accent-muted: #003300;
+
+    --border-color: rgba(0, 255, 65, 0.15);
+    --border-hover: rgba(0, 255, 65, 0.3);
+
+    --shadow-color: 0, 255, 65;
+    --shadow-sm: 0 0 5px rgba(var(--shadow-color), 0.3),
+                 0 0 10px rgba(var(--shadow-color), 0.2);
+    --shadow-md: 0 0 10px rgba(var(--shadow-color), 0.4),
+                 0 0 20px rgba(var(--shadow-color), 0.3);
+    --shadow-lg: 0 0 20px rgba(var(--shadow-color), 0.5),
+                 0 0 40px rgba(var(--shadow-color), 0.3);
+    --shadow-xl: 0 0 40px rgba(var(--shadow-color), 0.6),
+                 0 0 80px rgba(var(--shadow-color), 0.4);
+
+    /* Status Colors - Matrix green variations */
+    --success: #00FF41;
+    --warning: #CCFF00;
+    --error: #FF3333;
+    --info: #00CCFF;
+
+    /* Skill Level Colors */
+    --skill-expert: #00FF41;
+    --skill-advanced: #00DD33;
+    --skill-intermediate: #00BB33;
+    --skill-beginner: #009922;
+}
+
+.site-header {
+    background: rgba(0, 0, 0, 0.95);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.skill-tag--expert {
+    background: rgba(0, 255, 65, 0.1);
+    color: var(--skill-expert);
+    border-color: rgba(0, 255, 65, 0.4);
+    box-shadow: 0 0 5px rgba(0, 255, 65, 0.2);
+}
+
+.skill-tag--advanced {
+    background: rgba(0, 221, 51, 0.1);
+    color: var(--skill-advanced);
+    border-color: rgba(0, 221, 51, 0.4);
+}
+
+.skill-tag--intermediate {
+    background: rgba(0, 187, 51, 0.1);
+    color: var(--skill-intermediate);
+    border-color: rgba(0, 187, 51, 0.4);
+}
+
+.skill-tag--beginner {
+    background: rgba(0, 153, 34, 0.1);
+    color: var(--skill-beginner);
+    border-color: rgba(0, 153, 34, 0.4);
+}
+
+.project-card__icon {
+    background: linear-gradient(135deg, #00FF41, #003300);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+}
+
+::selection {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+}
+
+:focus-visible {
+    outline-color: var(--accent-primary);
+    outline-style: solid;
+    outline-width: 2px;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+}
+
+.profile-hero__image {
+    border-color: var(--border-color);
+    border-width: 2px;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+}
+
+.profile-hero:hover .profile-hero__image {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
+}
+
+.profile-hero__status {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+}
+
+.profile-hero__status-dot {
+    background: var(--success);
+    box-shadow: 0 0 10px var(--success);
+}
+
+.contact-item:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--border-hover);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+}
+
+.contact-item__icon {
+    background: var(--bg-tertiary);
+    color: var(--accent-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn--primary {
+    background: transparent;
+    color: var(--accent-primary);
+    border: 2px solid var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn--primary:hover {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+    text-shadow: none;
+}
+
+.btn--secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.btn--secondary:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+}
+
+.btn--outline {
+    color: var(--accent-primary);
+    border: 2px solid var(--accent-primary);
+    background: transparent;
+}
+
+.btn--outline:hover {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+}
+
+.social-link {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: var(--bg-primary);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+}
+
+.site-footer__link {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.site-footer__link:hover {
+    color: var(--accent-primary);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+}
+
+.experience-card__duration {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+}
+
+.experience-card__duration-fill {
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.4);
+}
+
+.tech-badge {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.tech-badge:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+.bento-card__icon {
+    background: var(--bg-tertiary);
+    color: var(--accent-primary);
+    border: 1px solid var(--border-color);
+}
+
+.bento-card:hover .bento-card__icon {
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+}
+
+.section-title__icon {
+    background: var(--bg-tertiary);
+    color: var(--accent-primary);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+}
+
+.stat-card__value {
+    color: var(--accent-primary);
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+}
+
+.theme-toggle {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--accent-primary);
+}
+
+.theme-toggle:hover {
+    background: var(--accent-muted);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+}
+
+.theme-toggle i {
+    color: var(--accent-primary);
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+.site-nav__link:hover,
+.site-nav__link.active {
+    background: var(--bg-tertiary);
+    color: var(--accent-primary);
+    border-bottom: 2px solid var(--accent-primary);
+}
+
+.experience-card__date {
+    background: var(--bg-tertiary);
+    color: var(--text-tertiary);
+    border: 1px solid var(--border-color);
+}
+
+.experience-card__list li::before {
+    background: var(--accent-primary);
+    box-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+.education-card__list li::before {
+    background: var(--accent-secondary);
+}
+
+.achievement-card__title i {
+    color: var(--accent-primary);
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.4);
+}
+
+.mobile-nav {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+}
+
+.mobile-nav__link:hover,
+.mobile-nav__link.active {
+    background: var(--bg-tertiary);
+    color: var(--accent-primary);
+}
+
+/* Matrix-specific enhancements */
+.card {
+    border: 1px solid var(--border-color);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+}
+
+.card:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.15);
+}
+
+.experience-card,
+.education-card,
+.project-card,
+.achievement-card {
+    border-left: 3px solid var(--accent-primary);
+}
+
+a {
+    color: var(--accent-primary);
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--accent-secondary);
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+}
+
+/* Scanline effect overlay */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 65, 0.03),
+        rgba(0, 255, 65, 0.03) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 9999;
+}

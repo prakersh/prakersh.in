@@ -99,7 +99,7 @@ if ($is_logged_in) {
     // Change Theme
     if (isset($_POST['change_theme'])) {
         $theme = htmlspecialchars(trim($_POST['theme'] ?? ''), ENT_QUOTES, 'UTF-8');
-        if (in_array($theme, ['light', 'dark', 'blue', 'peach', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy'])) { // Whitelist allowed themes (Zen theme system)
+        if (in_array($theme, ['light', 'dark', 'blue', 'peach', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy', 'matrix'])) { // Whitelist allowed themes (Zen theme system)
             $stmt = $pdo->prepare('UPDATE admin_settings SET theme = ? WHERE id = 1');
             $stmt->execute([$theme]);
             $message = "Theme updated successfully!";
@@ -111,7 +111,7 @@ if ($is_logged_in) {
     // Also handle the new save_theme button name
     if (isset($_POST['save_theme'])) {
         $theme = htmlspecialchars(trim($_POST['theme'] ?? ''), ENT_QUOTES, 'UTF-8');
-        if (in_array($theme, ['light', 'dark', 'blue', 'peach', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy'])) { // Whitelist allowed themes (Zen theme system)
+        if (in_array($theme, ['light', 'dark', 'blue', 'peach', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy', 'matrix'])) { // Whitelist allowed themes (Zen theme system)
             $stmt = $pdo->prepare('UPDATE admin_settings SET theme = ? WHERE id = 1');
             $stmt->execute([$theme]);
             $message = "Theme updated successfully!";
@@ -981,6 +981,7 @@ if ($is_logged_in) {
                                                         <option value="sunset" <?php echo ($current_theme == 'sunset') ? 'selected' : ''; ?>>Sunset (Coral Horizon)</option>
                                                         <option value="mint" <?php echo ($current_theme == 'mint') ? 'selected' : ''; ?>>Mint (Fresh Mint)</option>
                                                         <option value="navy" <?php echo ($current_theme == 'navy') ? 'selected' : ''; ?>>Navy (Royal Navy)</option>
+                                                        <option value="matrix" <?php echo ($current_theme == 'matrix') ? 'selected' : ''; ?>>Matrix (Digital Rain)</option>
                                                     </select>
                                                 </div>
                                                 
