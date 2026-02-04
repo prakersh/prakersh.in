@@ -8,26 +8,10 @@ WORKDIR /var/www/html
 RUN apt-get update && apt-get install -y \
     sqlite3 \
     libsqlite3-dev \
+    wkhtmltopdf \
     curl \
-    wget \
-    fontconfig \
-    libfreetype6 \
-    libjpeg62-turbo \
-    libpng16-16 \
-    libx11-6 \
-    libxcb1 \
-    libxext6 \
-    libxrender1 \
-    xfonts-75dpi \
-    xfonts-base \
     && docker-php-ext-install pdo pdo_sqlite \
     && rm -rf /var/lib/apt/lists/*
-
-# Install wkhtmltopdf from official release (not available in apt)
-RUN wget -q https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltopdf_0.12.6.1-3.bookworm_amd64.deb \
-    && dpkg -i wkhtmltopdf_0.12.6.1-3.bookworm_amd64.deb \
-    || apt-get install -f -y \
-    && rm wkhtmltopdf_0.12.6.1-3.bookworm_amd64.deb
 
 # Copy application files
 COPY . .
