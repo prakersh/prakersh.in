@@ -26,7 +26,7 @@
 
     <?php
     // Get current theme from database (admin default)
-    $adminTheme = 'light';
+    $adminTheme = 'blue';
     try {
         $stmt = $pdo->prepare('SELECT theme FROM admin_settings WHERE id = 1');
         $stmt->execute();
@@ -35,12 +35,10 @@
             $adminTheme = $fetchedTheme;
         }
 
-        // Only load theme CSS if not light (light is default in style.css)
-        if ($adminTheme !== 'light') {
-            echo '<link rel="stylesheet" href="css/theme-' . htmlspecialchars($adminTheme) . '.css" id="theme-css">';
-        }
+        // Load theme CSS file
+        echo '<link rel="stylesheet" href="css/theme-' . htmlspecialchars($adminTheme) . '.css" id="theme-css">';
     } catch (PDOException $e) {
-        $adminTheme = 'light';
+        $adminTheme = 'blue';
     }
     ?>
 
