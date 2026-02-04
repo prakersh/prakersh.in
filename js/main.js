@@ -8,7 +8,7 @@
 
     // Theme System
     const ThemeManager = {
-        themes: ['light', 'dark', 'peach', 'blue'],
+        themes: ['light', 'dark', 'peach', 'blue', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy'],
         currentIndex: 0,
         storageKey: 'zen-theme',
 
@@ -96,6 +96,24 @@
                     break;
                 case 'blue':
                     icon.className = 'fas fa-water';
+                    break;
+                case 'forest':
+                    icon.className = 'fas fa-tree';
+                    break;
+                case 'berry':
+                    icon.className = 'fas fa-apple-alt';
+                    break;
+                case 'monochrome':
+                    icon.className = 'fas fa-adjust';
+                    break;
+                case 'sunset':
+                    icon.className = 'fas fa-cloud-sun';
+                    break;
+                case 'mint':
+                    icon.className = 'fas fa-spa';
+                    break;
+                case 'navy':
+                    icon.className = 'fas fa-crown';
                     break;
                 default:
                     icon.className = 'fas fa-adjust';

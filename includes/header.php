@@ -31,7 +31,7 @@
         $stmt = $pdo->prepare('SELECT theme FROM admin_settings WHERE id = 1');
         $stmt->execute();
         $fetchedTheme = $stmt->fetchColumn();
-        if ($fetchedTheme && in_array($fetchedTheme, ['light', 'dark', 'peach', 'blue'])) {
+        if ($fetchedTheme && in_array($fetchedTheme, ['light', 'dark', 'peach', 'blue', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy'])) {
             $adminTheme = $fetchedTheme;
         }
 
@@ -53,7 +53,7 @@
             const adminTheme = '<?php echo htmlspecialchars($adminTheme); ?>';
             const saved = localStorage.getItem('zen-theme');
             // Use user's preference if set, otherwise use admin default
-            const theme = (saved && ['light', 'dark', 'peach', 'blue'].includes(saved)) ? saved : adminTheme;
+            const theme = (saved && ['light', 'dark', 'peach', 'blue', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy'].includes(saved)) ? saved : adminTheme;
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
