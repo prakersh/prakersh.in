@@ -392,30 +392,81 @@ ul, ol {
     gap: var(--space-sm);
 }
 
-/* Theme Toggle Button */
-.theme-toggle {
+/* Theme Selector */
+.theme-selector {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
+    gap: var(--space-xs);
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
+    padding: 4px;
+    transition: all var(--duration-fast) var(--ease-out);
+}
+
+.theme-selector:hover {
+    border-color: var(--border-hover);
+}
+
+.theme-select {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 6px 8px;
+    cursor: pointer;
+    outline: none;
+    min-width: 80px;
+    text-transform: capitalize;
+}
+
+.theme-select:hover {
+    color: var(--text-primary);
+}
+
+.theme-select option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    padding: 8px;
+}
+
+.theme-next-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     color: var(--text-secondary);
     cursor: pointer;
     transition: all var(--duration-fast) var(--ease-out);
 }
 
-.theme-toggle:hover {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border-color: var(--border-hover);
+.theme-next-btn:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: var(--bg-primary);
 }
 
-.theme-toggle i {
-    font-size: 1rem;
-    transition: transform var(--duration-slow) var(--ease-spring);
+.theme-next-btn i {
+    font-size: 0.75rem;
+}
+
+/* Responsive theme selector */
+@media (max-width: 480px) {
+    .theme-select {
+        min-width: 60px;
+        font-size: 0.8rem;
+        padding: 4px 6px;
+    }
+    
+    .theme-next-btn {
+        width: 28px;
+        height: 28px;
+    }
 }
 
 /* Mobile Menu Toggle */
@@ -584,7 +635,9 @@ ul, ol {
 }
 
 .profile-hero__image-wrapper {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     flex-shrink: 0;
 }
 
@@ -609,10 +662,6 @@ ul, ol {
 }
 
 .profile-hero__status {
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
     align-items: center;
     gap: var(--space-xs);
@@ -625,6 +674,7 @@ ul, ol {
     box-shadow: var(--shadow-sm);
     white-space: nowrap;
     border: 1px solid var(--border-color);
+    margin-top: var(--space-sm);
 }
 
 .profile-hero__status-dot {

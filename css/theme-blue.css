@@ -103,6 +103,7 @@
 .profile-hero__status {
     background: var(--bg-card);
     border-color: var(--border-color);
+    margin-top: var(--space-sm);
 }
 
 .profile-hero__status-dot {
@@ -211,14 +212,26 @@
 }
 
 /* Theme toggle */
-.theme-toggle {
+.theme-selector {
     background: var(--bg-tertiary);
     border-color: var(--border-color);
 }
 
-.theme-toggle:hover {
+.theme-selector:hover {
     background: var(--bg-secondary);
     border-color: var(--border-hover);
+}
+
+.theme-next-btn {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+.theme-next-btn:hover {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
 }
 
 /* Nav link active */

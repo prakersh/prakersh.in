@@ -8,7 +8,7 @@
 
     // Theme System
     const ThemeManager = {
-        themes: ['light', 'dark', 'peach', 'blue'],
+        themes: ['blue', 'matrix', 'light', 'dark', 'peach', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy'],
         currentIndex: 0,
         storageKey: 'zen-theme',
 
@@ -19,7 +19,7 @@
             if (saved && this.themes.includes(saved)) {
                 // User has a preference - use it
                 this.currentIndex = this.themes.indexOf(saved);
-                this.applyTheme(saved);
+                this.applyTheme(saved, false);
             } else {
                 // No user preference - use admin-set theme (already loaded by PHP)
                 // Read current theme from data-theme attribute or theme-css link
@@ -30,24 +30,36 @@
                 // Don't apply - already set by server
             }
 
-            // Bind toggle button
-            const toggleBtn = document.getElementById('theme-toggle');
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => this.toggle());
+            // Bind theme dropdown
+            const themeSelect = document.getElementById('theme-select');
+            if (themeSelect) {
+                themeSelect.value = this.themes[this.currentIndex];
+                themeSelect.addEventListener('change', (e) => this.selectTheme(e.target.value));
             }
 
-            // Update icon to match current theme
-            this.updateIcon(this.themes[this.currentIndex]);
+            // Bind next button
+            const nextBtn = document.getElementById('theme-next-btn');
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => this.next());
+            }
         },
 
-        toggle() {
+        selectTheme(theme) {
+            if (this.themes.includes(theme)) {
+                this.currentIndex = this.themes.indexOf(theme);
+                this.applyTheme(theme);
+                localStorage.setItem(this.storageKey, theme);
+            }
+        },
+
+        next() {
             this.currentIndex = (this.currentIndex + 1) % this.themes.length;
             const newTheme = this.themes[this.currentIndex];
             this.applyTheme(newTheme);
             localStorage.setItem(this.storageKey, newTheme);
         },
 
-        applyTheme(theme) {
+        applyTheme(theme, save = true) {
             // Remove existing theme CSS
             const existingThemeCss = document.getElementById('theme-css');
 
@@ -69,36 +81,15 @@
                 existingThemeCss.remove();
             }
 
-            // Update toggle button icon
-            this.updateIcon(theme);
-        },
+            // Update dropdown selection
+            const themeSelect = document.getElementById('theme-select');
+            if (themeSelect) {
+                themeSelect.value = theme;
+            }
 
-        updateIcon(theme) {
-            const toggleBtn = document.getElementById('theme-toggle');
-            if (!toggleBtn) return;
-
-            const icon = toggleBtn.querySelector('i');
-            if (!icon) return;
-
-            // Remove all icon classes
-            icon.className = '';
-
-            // Set icon based on theme
-            switch(theme) {
-                case 'light':
-                    icon.className = 'fas fa-moon';
-                    break;
-                case 'dark':
-                    icon.className = 'fas fa-sun';
-                    break;
-                case 'peach':
-                    icon.className = 'fas fa-leaf';
-                    break;
-                case 'blue':
-                    icon.className = 'fas fa-water';
-                    break;
-                default:
-                    icon.className = 'fas fa-adjust';
+            // Save to localStorage if requested
+            if (save) {
+                localStorage.setItem(this.storageKey, theme);
             }
         }
     };

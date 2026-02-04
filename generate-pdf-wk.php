@@ -70,7 +70,7 @@ try {
             }
 
             /* Hide non-print elements */
-            .d-print-none, .site-header, .site-footer, .theme-toggle,
+            .d-print-none, .site-header, .site-footer, .theme-selector,
             .mobile-menu-toggle, .mobile-nav, .social-links, .btn,
             .skills-legend, .project-card__actions, .achievement-card__link,
             .bento-stats, .experience-card__duration-bar, .experience-card__duration,

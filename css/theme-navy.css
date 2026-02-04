@@ -1,113 +1,88 @@
 /*
- * Zen Portfolio - Dark Theme (Midnight Garden)
- * A warm, inviting dark theme with muted sage accents
+ * Zen Portfolio - Navy Theme (Royal Navy)
+ * Deep navy blue with elegant gold accents
+ * Professional luxury aesthetic for executive presence
  */
 
 :root {
-    /* Dark Theme Colors */
-    --bg-primary: #1A1A1A;
-    --bg-secondary: #222222;
-    --bg-tertiary: #2A2A2A;
-    --bg-card: #242424;
+    --bg-primary: #1A1F2E;
+    --bg-secondary: #232838;
+    --bg-tertiary: #2D3448;
+    --bg-card: #202536;
 
-    --text-primary: #E8E6E3;
-    --text-secondary: #B8B5B0;
-    --text-tertiary: #7A7875;
+    --text-primary: #E8EAF0;
+    --text-secondary: #B8BCC8;
+    --text-tertiary: #8A90A0;
 
-    --accent-primary: #9AB89F;
-    --accent-secondary: #C9B8A8;
-    --accent-muted: #4A4540;
+    --accent-primary: #D4AF37;
+    --accent-secondary: #7A8BA8;
+    --accent-muted: #3D4558;
 
-    --border-color: rgba(255, 255, 255, 0.06);
-    --border-hover: rgba(255, 255, 255, 0.12);
+    --border-color: rgba(212, 175, 55, 0.08);
+    --border-hover: rgba(212, 175, 55, 0.15);
 
     --shadow-color: 0, 0, 0;
-    --shadow-sm: 0 1px 3px rgba(var(--shadow-color), 0.15),
-                 0 1px 2px rgba(var(--shadow-color), 0.2);
-    --shadow-md: 0 4px 12px rgba(var(--shadow-color), 0.2),
-                 0 2px 4px rgba(var(--shadow-color), 0.15);
-    --shadow-lg: 0 12px 32px rgba(var(--shadow-color), 0.25),
-                 0 4px 8px rgba(var(--shadow-color), 0.15);
-    --shadow-xl: 0 24px 48px rgba(var(--shadow-color), 0.3),
-                 0 8px 16px rgba(var(--shadow-color), 0.2);
+    --shadow-sm: 0 1px 3px rgba(var(--shadow-color), 0.2),
+                 0 1px 2px rgba(var(--shadow-color), 0.25);
+    --shadow-md: 0 4px 12px rgba(var(--shadow-color), 0.25),
+                 0 2px 4px rgba(var(--shadow-color), 0.2);
+    --shadow-lg: 0 12px 32px rgba(var(--shadow-color), 0.3),
+                 0 4px 8px rgba(var(--shadow-color), 0.2);
+    --shadow-xl: 0 24px 48px rgba(var(--shadow-color), 0.35),
+                 0 8px 16px rgba(var(--shadow-color), 0.25);
 
-    /* Status Colors - Lighter for dark mode */
-    --success: #9AB89F;
-    --warning: #D4B896;
-    --error: #C99A9A;
-    --info: #9AAAB8;
+    --success: #7BA082;
+    --warning: #C9A862;
+    --error: #C97A7A;
+    --info: #7A8BA8;
 
-    /* Skill Level Colors - Adjusted for dark mode */
-    --skill-expert: #7CB885;
-    --skill-advanced: #9AB89F;
-    --skill-intermediate: #9AAAB8;
-    --skill-beginner: #888888;
+    --skill-expert: #E4C94A;
+    --skill-advanced: #D4AF37;
+    --skill-intermediate: #B8A86A;
+    --skill-beginner: #8A8A7A;
 }
 
-/* Header background for dark mode */
 .site-header {
-    background: rgba(26, 26, 26, 0.9);
+    background: rgba(26, 31, 46, 0.9);
 }
 
-/* Skill tags - Dark mode adjustments */
 .skill-tag--expert {
-    background: rgba(124, 184, 133, 0.15);
+    background: rgba(228, 201, 74, 0.15);
     color: var(--skill-expert);
-    border-color: rgba(124, 184, 133, 0.3);
+    border-color: rgba(228, 201, 74, 0.3);
 }
 
 .skill-tag--advanced {
-    background: rgba(154, 184, 159, 0.15);
+    background: rgba(212, 175, 55, 0.15);
     color: var(--skill-advanced);
-    border-color: rgba(154, 184, 159, 0.3);
+    border-color: rgba(212, 175, 55, 0.3);
 }
 
 .skill-tag--intermediate {
-    background: rgba(154, 170, 184, 0.15);
+    background: rgba(184, 168, 106, 0.15);
     color: var(--skill-intermediate);
-    border-color: rgba(154, 170, 184, 0.3);
+    border-color: rgba(184, 168, 106, 0.3);
 }
 
 .skill-tag--beginner {
-    background: rgba(136, 136, 136, 0.12);
+    background: rgba(138, 138, 122, 0.12);
     color: var(--skill-beginner);
-    border-color: rgba(136, 136, 136, 0.25);
+    border-color: rgba(138, 138, 122, 0.25);
 }
 
-/* Project icon gradient for dark mode */
 .project-card__icon {
-    background: linear-gradient(135deg, #9AB89F, #C9B8A8);
+    background: linear-gradient(135deg, #D4AF37, #7A8BA8);
 }
 
-/* Theme selector styles */
-.theme-selector i {
-    color: var(--text-secondary);
-}
-
-.theme-next-btn {
-    background: var(--bg-tertiary);
-    border-color: var(--border-color);
-    color: var(--text-secondary);
-}
-
-.theme-next-btn:hover {
-    background: var(--accent-primary);
-    border-color: var(--accent-primary);
-    color: var(--bg-primary);
-}
-
-/* Selection color */
 ::selection {
     background: var(--accent-primary);
     color: var(--bg-primary);
 }
 
-/* Focus visible */
 :focus-visible {
     outline-color: var(--accent-primary);
 }
 
-/* Profile image border */
 .profile-hero__image {
     border-color: var(--bg-tertiary);
 }
@@ -116,14 +91,12 @@
     border-color: var(--accent-primary);
 }
 
-/* Status indicator */
 .profile-hero__status {
     background: var(--bg-card);
     border-color: var(--border-color);
     margin-top: var(--space-sm);
 }
 
-/* Contact item hover */
 .contact-item:hover {
     background: var(--bg-tertiary);
 }
@@ -132,7 +105,6 @@
     background: var(--bg-tertiary);
 }
 
-/* Button adjustments for dark mode */
 .btn--primary {
     background: var(--accent-primary);
     color: var(--bg-primary);
@@ -161,7 +133,6 @@
     color: var(--bg-primary);
 }
 
-/* Social links */
 .social-link {
     background: var(--bg-tertiary);
     border-color: var(--border-color);
@@ -174,7 +145,6 @@
     color: var(--bg-primary);
 }
 
-/* Footer */
 .site-footer__link {
     background: var(--bg-card);
     border-color: var(--border-color);
@@ -186,7 +156,6 @@
     border-color: var(--accent-primary);
 }
 
-/* Duration bar */
 .experience-card__duration {
     background: var(--bg-tertiary);
 }
@@ -195,36 +164,30 @@
     background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
 }
 
-/* Tech badges */
 .tech-badge {
     background: var(--bg-tertiary);
     color: var(--text-secondary);
 }
 
-/* Bento card icon */
 .bento-card__icon {
     background: var(--bg-tertiary);
     color: var(--accent-primary);
 }
 
-/* Section title icon */
 .section-title__icon {
     background: var(--bg-tertiary);
     color: var(--accent-primary);
 }
 
-/* Stat card */
 .stat-card__value {
     color: var(--accent-primary);
 }
 
-/* Experience card date badge */
 .experience-card__date {
     background: var(--bg-tertiary);
     color: var(--text-tertiary);
 }
 
-/* List bullets */
 .experience-card__list li::before {
     background: var(--accent-primary);
 }
@@ -233,12 +196,10 @@
     background: var(--accent-secondary);
 }
 
-/* Achievement card icon */
 .achievement-card__title i {
     color: var(--accent-primary);
 }
 
-/* Mobile nav */
 .mobile-nav {
     background: var(--bg-card);
     border-color: var(--border-color);

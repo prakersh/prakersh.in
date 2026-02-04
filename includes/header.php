@@ -72,21 +72,19 @@ $breadcrumbSchema = getBreadcrumbSchema($breadcrumbs);
 
     <?php
     // Get current theme from database (admin default)
-    $adminTheme = 'light';
+    $adminTheme = 'blue';
     try {
         $stmt = $pdo->prepare('SELECT theme FROM admin_settings WHERE id = 1');
         $stmt->execute();
         $fetchedTheme = $stmt->fetchColumn();
-        if ($fetchedTheme && in_array($fetchedTheme, ['light', 'dark', 'peach', 'blue'])) {
+        if ($fetchedTheme && in_array($fetchedTheme, ['light', 'dark', 'peach', 'blue', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy', 'matrix'])) {
             $adminTheme = $fetchedTheme;
         }
 
-        // Only load theme CSS if not light (light is default in style.css)
-        if ($adminTheme !== 'light') {
-            echo '<link rel="stylesheet" href="css/theme-' . htmlspecialchars($adminTheme) . '.css" id="theme-css">';
-        }
+        // Load theme CSS file
+        echo '<link rel="stylesheet" href="css/theme-' . htmlspecialchars($adminTheme) . '.css" id="theme-css">';
     } catch (PDOException $e) {
-        $adminTheme = 'light';
+        $adminTheme = 'blue';
     }
     ?>
 
@@ -99,7 +97,7 @@ $breadcrumbSchema = getBreadcrumbSchema($breadcrumbs);
             const adminTheme = '<?php echo htmlspecialchars($adminTheme); ?>';
             const saved = localStorage.getItem('zen-theme');
             // Use user's preference if set, otherwise use admin default
-            const theme = (saved && ['light', 'dark', 'peach', 'blue'].includes(saved)) ? saved : adminTheme;
+            const theme = (saved && ['light', 'dark', 'peach', 'blue', 'forest', 'berry', 'monochrome', 'sunset', 'mint', 'navy', 'matrix'].includes(saved)) ? saved : adminTheme;
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
@@ -123,9 +121,24 @@ $breadcrumbSchema = getBreadcrumbSchema($breadcrumbs);
                 </nav>
 
                 <div class="site-header__actions">
-                    <button class="theme-toggle d-print-none" id="theme-toggle" aria-label="Toggle theme">
-                        <i class="fas fa-moon"></i>
-                    </button>
+                    <div class="theme-selector d-print-none">
+                        <select id="theme-select" class="theme-select" aria-label="Select theme">
+                            <option value="blue">Blue</option>
+                            <option value="matrix">Matrix</option>
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="peach">Peach</option>
+                            <option value="forest">Forest</option>
+                            <option value="berry">Berry</option>
+                            <option value="monochrome">Mono</option>
+                            <option value="sunset">Sunset</option>
+                            <option value="mint">Mint</option>
+                            <option value="navy">Navy</option>
+                        </select>
+                        <button class="theme-next-btn" id="theme-next-btn" aria-label="Next theme">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
                     <a href="#" class="btn btn--primary btn--sm d-print-none" id="download-resume-btn">
                         <i class="fas fa-download"></i>
                         <span class="visually-hidden-mobile">Resume</span>
