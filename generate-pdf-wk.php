@@ -115,8 +115,8 @@ try {
         '--no-stop-slow-scripts',
         '--javascript-delay 500',
         '--disable-smart-shrinking',    // CRITICAL: Prevent auto-shrinking that compresses content
-        '--dpi 96',                     // Match screen DPI for consistent sizing
-        '--zoom 1.0',                   // No zoom - render at 100%
+        '--dpi 72',                     // Standard print DPI (72) to match browser print output
+        '--zoom 1.33',                  // Compensate for lower DPI to maintain visual size (96/72)
         '--image-quality 100'           // High quality images
     ];
     
