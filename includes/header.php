@@ -1,11 +1,57 @@
+<?php
+require_once __DIR__ . '/seo.php';
+
+$seoData = getSeoData();
+$profile = $seoData['profile'];
+$skills = $seoData['skills'];
+$projects = $seoData['projects'];
+
+$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
+$baseUrl = $protocol . $_SERVER['HTTP_HOST'];
+$currentUrl = $baseUrl . $_SERVER['REQUEST_URI'];
+
+$pageTitle = getPageTitle($profile['name'], $profile['job_title']);
+$metaDescription = getMetaDescription($profile);
+$keywords = getKeywords($skills, $seoData['experience']);
+$canonicalUrl = getCanonicalUrl($baseUrl);
+
+$openGraphTags = getOpenGraphTags($profile, $pageTitle, $currentUrl, $metaDescription);
+$twitterCardTags = getTwitterCardTags($pageTitle, $metaDescription, $currentUrl);
+$jsonLdPerson = getJsonLdPerson($seoData, $baseUrl);
+
+// Generate breadcrumb schema for home page
+$breadcrumbs = [
+    ['name' => 'Home', 'url' => $baseUrl]
+];
+$breadcrumbSchema = getBreadcrumbSchema($breadcrumbs);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
-    <title><?php echo htmlspecialchars($profile['name']); ?> - <?php echo htmlspecialchars($profile['job_title']); ?></title>
-    <meta name="description" content="Portfolio of <?php echo htmlspecialchars($profile['name']); ?>, <?php echo htmlspecialchars($profile['job_title']); ?> - <?php echo htmlspecialchars(substr($profile['summary'], 0, 150)); ?>...">
+    
+    <!-- Basic Meta Tags -->
+    <title><?php echo htmlspecialchars($pageTitle); ?></title>
+    <meta name="description" content="<?php echo htmlspecialchars($metaDescription); ?>">
+    <meta name="keywords" content="<?php echo htmlspecialchars($keywords); ?>">
+    <meta name="author" content="<?php echo htmlspecialchars($profile['name']); ?>">
+    <link rel="canonical" href="<?php echo htmlspecialchars($canonicalUrl); ?>">
+    
+    <!-- Open Graph Meta Tags -->
+    <?php echo $openGraphTags; ?>
+    
+    <!-- Twitter Card Meta Tags -->
+    <?php echo $twitterCardTags; ?>
+    
+    <!-- Structured Data (JSON-LD) -->
+    <?php echo $jsonLdPerson; ?>
+    <?php echo $breadcrumbSchema; ?>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#007bff">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">

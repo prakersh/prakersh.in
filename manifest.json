@@ -1,0 +1,33 @@
+{
+  "name": "Portfolio Website",
+  "short_name": "Portfolio",
+  "description": "Professional portfolio website showcasing skills, experience, and projects",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007bff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/images/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "portfolio",
+    "professional",
+    "business"
+  ],
+  "screenshots": [],
+  "shortcuts": [],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
