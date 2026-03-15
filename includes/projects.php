@@ -6,7 +6,7 @@ if (!function_exists('getDbConnection')) {
 $pdo = getDbConnection();
 
 // Fetch projects data
-$stmt = $pdo->query('SELECT * FROM projects');
+$stmt = $pdo->query('SELECT * FROM projects ORDER BY id ASC');
 $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Helper function to get icon class based on project keywords
@@ -33,9 +33,88 @@ function getProjectIconClass($title, $description) {
         return 'fa-database';
     } elseif (strpos($text, 'automation') !== false || strpos($text, 'script') !== false) {
         return 'fa-cogs';
+    } elseif (strpos($text, 'monitor') !== false || strpos($text, 'watch') !== false) {
+        return 'fa-eye';
+    } elseif (strpos($text, 'auth') !== false || strpos($text, 'login') !== false) {
+        return 'fa-key';
     } else {
         return 'fa-code';
     }
+}
+
+/**
+ * Fetch GitHub repo stats (stars, forks) with file-based caching.
+ * Cache TTL: 1 hour. Returns null on failure.
+ */
+function getGithubStats($githubUrl) {
+    if (empty($githubUrl)) {
+        return null;
+    }
+
+    // Extract owner/repo from GitHub URL
+    $path = trim(parse_url($githubUrl, PHP_URL_PATH), '/');
+    if (empty($path) || substr_count($path, '/') < 1) {
+        return null;
+    }
+
+    // Cache in data directory
+    $cacheDir = __DIR__ . '/../data/github_cache';
+    if (!is_dir($cacheDir)) {
+        mkdir($cacheDir, 0755, true);
+    }
+
+    $cacheFile = $cacheDir . '/' . md5($path) . '.json';
+    $cacheTtl = 3600; // 1 hour
+
+    // Check cache
+    if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTtl) {
+        $cached = json_decode(file_get_contents($cacheFile), true);
+        if ($cached !== null) {
+            return $cached;
+        }
+    }
+
+    // Fetch from GitHub API
+    $apiUrl = 'https://api.github.com/repos/' . $path;
+    $context = stream_context_create([
+        'http' => [
+            'method' => 'GET',
+            'header' => "User-Agent: prakersh-portfolio\r\nAccept: application/vnd.github.v3+json\r\n",
+            'timeout' => 5,
+        ]
+    ]);
+
+    $response = @file_get_contents($apiUrl, false, $context);
+    if ($response === false) {
+        // Return stale cache if available
+        if (file_exists($cacheFile)) {
+            return json_decode(file_get_contents($cacheFile), true);
+        }
+        return null;
+    }
+
+    $data = json_decode($response, true);
+    if (!isset($data['stargazers_count'])) {
+        return null;
+    }
+
+    $stats = [
+        'stars' => (int)$data['stargazers_count'],
+        'forks' => (int)$data['forks_count'],
+    ];
+
+    file_put_contents($cacheFile, json_encode($stats));
+    return $stats;
+}
+
+/**
+ * Format a number for display (e.g. 1200 -> 1.2k)
+ */
+function formatCount($num) {
+    if ($num >= 1000) {
+        return round($num / 1000, 1) . 'k';
+    }
+    return (string)$num;
 }
 ?>
 
@@ -54,6 +133,8 @@ function getProjectIconClass($title, $description) {
             // Decode the technologies JSON
             $technologies = json_decode($project['technologies'], true);
             $iconClass = getProjectIconClass($project['title'], $project['description']);
+            $githubUrl = $project['github_url'] ?? '';
+            $githubStats = getGithubStats($githubUrl);
         ?>
         <article class="bento-card project-card animate-on-scroll" style="--animation-delay: <?php echo ($index * 0.1); ?>s">
             <div class="project-card__icon">
@@ -71,17 +152,42 @@ function getProjectIconClass($title, $description) {
             </div>
             <?php endif; ?>
 
-            <?php if (!empty($project['link'])): ?>
-            <div class="project-card__actions">
-                <a href="<?php echo htmlspecialchars($project['link']); ?>"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   class="btn btn--outline btn--sm">
-                    <i class="fab fa-github"></i>
-                    View Code
-                </a>
+            <div class="project-card__footer">
+                <?php if ($githubStats !== null): ?>
+                <div class="project-card__stats">
+                    <a href="<?php echo htmlspecialchars($githubUrl); ?>/stargazers" target="_blank" rel="noopener noreferrer" class="project-card__stat" title="Stars">
+                        <i class="fas fa-star"></i>
+                        <span><?php echo formatCount($githubStats['stars']); ?></span>
+                    </a>
+                    <a href="<?php echo htmlspecialchars($githubUrl); ?>/forks" target="_blank" rel="noopener noreferrer" class="project-card__stat" title="Forks">
+                        <i class="fas fa-code-branch"></i>
+                        <span><?php echo formatCount($githubStats['forks']); ?></span>
+                    </a>
+                </div>
+                <?php endif; ?>
+
+                <?php if (!empty($githubUrl)): ?>
+                <div class="project-card__actions">
+                    <a href="<?php echo htmlspecialchars($githubUrl); ?>"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn btn--outline btn--sm">
+                        <i class="fab fa-github"></i>
+                        GitHub
+                    </a>
+                </div>
+                <?php elseif (!empty($project['link'])): ?>
+                <div class="project-card__actions">
+                    <a href="<?php echo htmlspecialchars($project['link']); ?>"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn btn--outline btn--sm">
+                        <i class="fas fa-external-link-alt"></i>
+                        View Project
+                    </a>
+                </div>
+                <?php endif; ?>
             </div>
-            <?php endif; ?>
         </article>
         <?php endforeach; ?>
     </div>

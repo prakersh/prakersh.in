@@ -159,53 +159,75 @@ function populateDatabase($pdo) {
     // Populate projects with actual data
     $projects = [
         [
+            'onWatch',
+            'Free, open-source AI API quota monitoring for developers. Track usage across Anthropic, Codex, GitHub Copilot, and more. Lightweight background daemon with Material Design 3 dashboard. Zero telemetry.',
+            json_encode(['Go', 'SQLite', 'Material Design 3']),
+            'https://onwatch.onllm.dev',
+            '',
+            'https://github.com/onllm-dev/onWatch'
+        ],
+        [
+            'CodexMultiAuth',
+            'Switch Codex accounts quickly when limits hit. Encrypted credential storage, atomic account activation with rollback, and confidence-tiered usage reporting.',
+            json_encode(['Go', 'CLI', 'Encryption']),
+            '',
+            '',
+            'https://github.com/prakersh/codexmultiauth'
+        ],
+        [
             'Reader Writer Lock',
             'A C-based implementation of a reader-writer lock for file sharing over NFS. Supports multiple concurrent readers with exclusive writer access.',
             json_encode(['C', 'NFS', 'POSIX']),
-            'https://github.com/prakersh/reader-writer-lock',
-            ''
+            '',
+            '',
+            'https://github.com/prakersh/reader-writer-lock'
         ],
         [
             'encr - Encryption Tool',
             'A Shell-based wrapper over OpenSSL that provides an easy-to-use interface for file encryption and decryption with simple command line parameters.',
             json_encode(['Shell', 'OpenSSL', 'Bash']),
-            'https://github.com/prakersh/encr',
-            ''
+            '',
+            '',
+            'https://github.com/prakersh/encr'
         ],
         [
             'Python Progress Bar',
             'An implementation example of progress bars in Python for providing visual feedback to users during long-running operations.',
             json_encode(['Python', 'CLI', 'Utility']),
-            'https://github.com/prakersh/progressbar-python',
-            ''
+            '',
+            '',
+            'https://github.com/prakersh/progressbar-python'
         ],
         [
             'ShortTouch',
             'A Python utility that enables quick interactions with your system through customizable shortcuts and automation features.',
             json_encode(['Python', 'Automation', 'Utility']),
-            'https://github.com/prakersh/shorttouch',
-            ''
+            '',
+            '',
+            'https://github.com/prakersh/shorttouch'
         ],
         [
             'Open Source Point of Sale',
             'A PHP web application using CodeIgniter for managing inventory, sales, and customers with a responsive interface.',
             json_encode(['PHP', 'CodeIgniter', 'MySQL']),
-            'https://github.com/prakersh/opensourcepos',
-            ''
+            '',
+            '',
+            'https://github.com/prakersh/opensourcepos'
         ],
         [
             'Portfolio Website',
             'A responsive PHP portfolio/resume website with print functionality. Features modern design with Bootstrap and comprehensive resume sections.',
             json_encode(['CSS', 'PHP', 'Bootstrap']),
-            'https://github.com/prakersh/prakersh.in',
-            ''
+            '',
+            '',
+            'https://github.com/prakersh/prakersh.in'
         ]
     ];
-    
-    $stmt = $pdo->prepare('INSERT INTO projects 
-        (title, description, technologies, link, image) 
-        VALUES (?, ?, ?, ?, ?)');
-    
+
+    $stmt = $pdo->prepare('INSERT INTO projects
+        (title, description, technologies, link, image, github_url)
+        VALUES (?, ?, ?, ?, ?, ?)');
+
     foreach ($projects as $project) {
         $stmt->execute($project);
     }

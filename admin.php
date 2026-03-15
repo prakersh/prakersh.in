@@ -497,42 +497,45 @@ if ($is_logged_in) {
     // Handle projects operations
     if (isset($_POST['add_project'])) {
         $technologies = json_encode($_POST['project']['technologies'] ?? []);
-        
-        $stmt = $pdo->prepare('INSERT INTO projects 
-            (title, description, technologies, link, image) 
-            VALUES (?, ?, ?, ?, ?)');
-            
-        $stmt->execute([
-            $_POST['project']['title'],
-            $_POST['project']['description'],
-            $technologies,
-            $_POST['project']['link'],
-            $_POST['project']['image']
-        ]);
-        
-        $message = "Project added successfully!";
-    }
-    
-    if (isset($_POST['update_project'])) {
-        $technologies = json_encode($_POST['project']['technologies'] ?? []);
-        
-        $stmt = $pdo->prepare('UPDATE projects SET 
-            title = ?, 
-            description = ?, 
-            technologies = ?, 
-            link = ?, 
-            image = ?
-            WHERE id = ?');
-            
+
+        $stmt = $pdo->prepare('INSERT INTO projects
+            (title, description, technologies, link, image, github_url)
+            VALUES (?, ?, ?, ?, ?, ?)');
+
         $stmt->execute([
             $_POST['project']['title'],
             $_POST['project']['description'],
             $technologies,
             $_POST['project']['link'],
             $_POST['project']['image'],
+            $_POST['project']['github_url'] ?? ''
+        ]);
+
+        $message = "Project added successfully!";
+    }
+
+    if (isset($_POST['update_project'])) {
+        $technologies = json_encode($_POST['project']['technologies'] ?? []);
+
+        $stmt = $pdo->prepare('UPDATE projects SET
+            title = ?,
+            description = ?,
+            technologies = ?,
+            link = ?,
+            image = ?,
+            github_url = ?
+            WHERE id = ?');
+
+        $stmt->execute([
+            $_POST['project']['title'],
+            $_POST['project']['description'],
+            $technologies,
+            $_POST['project']['link'],
+            $_POST['project']['image'],
+            $_POST['project']['github_url'] ?? '',
             $_POST['project']['id']
         ]);
-        
+
         $message = "Project updated successfully!";
     }
     
@@ -1001,6 +1004,7 @@ if ($is_logged_in) {
                                                                 data-description="<?php echo htmlspecialchars($project['description']); ?>"
                                                                 data-link="<?php echo htmlspecialchars($project['link']); ?>"
                                                                 data-image="<?php echo htmlspecialchars($project['image']); ?>"
+                                                                data-github-url="<?php echo htmlspecialchars($project['github_url'] ?? ''); ?>"
                                                                 data-technologies='<?php echo json_encode($technologies); ?>'>
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
@@ -1016,6 +1020,9 @@ if ($is_logged_in) {
                                                     <p class="card-text"><?php echo htmlspecialchars($project['description']); ?></p>
                                                     <?php if (!empty($project['link'])): ?>
                                                     <p><a href="<?php echo htmlspecialchars($project['link']); ?>" target="_blank"><?php echo htmlspecialchars($project['link']); ?></a></p>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($project['github_url'])): ?>
+                                                    <p><i class="fab fa-github"></i> <a href="<?php echo htmlspecialchars($project['github_url']); ?>" target="_blank"><?php echo htmlspecialchars($project['github_url']); ?></a></p>
                                                     <?php endif; ?>
                                                     <?php if (is_array($technologies) && count($technologies) > 0): ?>
                                                     <div class="mt-2">
@@ -1594,6 +1601,11 @@ if ($is_logged_in) {
                             <input type="text" class="form-control" id="project_link" name="project[link]" placeholder="https://">
                         </div>
                         <div class="mb-3">
+                            <label for="project_github_url" class="form-label">GitHub URL</label>
+                            <input type="text" class="form-control" id="project_github_url" name="project[github_url]" placeholder="https://github.com/owner/repo">
+                            <small class="form-text text-muted">If provided, stars and forks will be displayed on the project card.</small>
+                        </div>
+                        <div class="mb-3">
                             <label for="project_image" class="form-label">Image Path</label>
                             <input type="text" class="form-control" id="project_image" name="project[image]" placeholder="assets/images/projects/example.jpg">
                         </div>
@@ -1639,6 +1651,11 @@ if ($is_logged_in) {
                         <div class="mb-3">
                             <label for="edit_project_link" class="form-label">Link</label>
                             <input type="text" class="form-control" id="edit_project_link" name="project[link]" placeholder="https://">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_project_github_url" class="form-label">GitHub URL</label>
+                            <input type="text" class="form-control" id="edit_project_github_url" name="project[github_url]" placeholder="https://github.com/owner/repo">
+                            <small class="form-text text-muted">If provided, stars and forks will be displayed on the project card.</small>
                         </div>
                         <div class="mb-3">
                             <label for="edit_project_image" class="form-label">Image Path</label>
@@ -2165,6 +2182,7 @@ if ($is_logged_in) {
                     const title = this.dataset.title;
                     const description = this.dataset.description;
                     const link = this.dataset.link;
+                    const githubUrl = this.dataset.githubUrl;
                     const image = this.dataset.image;
                     let technologies = [];
                     
@@ -2178,6 +2196,7 @@ if ($is_logged_in) {
                     document.getElementById('edit_project_title').value = title;
                     document.getElementById('edit_project_description').value = description;
                     document.getElementById('edit_project_link').value = link;
+                    document.getElementById('edit_project_github_url').value = githubUrl || '';
                     document.getElementById('edit_project_image').value = image;
                     
                     const container = document.getElementById('edit_technologies_container');

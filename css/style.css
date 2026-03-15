@@ -1307,6 +1307,45 @@ a.contact-item__value:hover {
     border-radius: var(--radius-sm);
 }
 
+.project-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: var(--space-xs);
+}
+
+.project-card__stats {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.project-card__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+}
+
+.project-card__stat:hover {
+    color: var(--accent-primary);
+}
+
+.project-card__stat i {
+    font-size: 0.75rem;
+}
+
+.project-card__stat .fa-star {
+    color: #f0a500;
+}
+
+.project-card__stat:hover .fa-star {
+    color: #f0a500;
+}
+
 .project-card__link {
     display: inline-flex;
     align-items: center;

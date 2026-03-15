@@ -100,7 +100,8 @@ function initializeDatabase($pdo) {
         description TEXT,
         technologies TEXT,
         link TEXT,
-        image TEXT
+        image TEXT,
+        github_url TEXT
     )');
     
     // Admin credentials table

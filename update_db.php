@@ -62,4 +62,28 @@ try {
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage() . "\n";
 }
-?> 
+
+// Add github_url column to projects table
+try {
+    $stmt = $pdo->query("PRAGMA table_info(projects)");
+    $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $githubUrlExists = false;
+    foreach ($columns as $column) {
+        if ($column['name'] === 'github_url') {
+            $githubUrlExists = true;
+            break;
+        }
+    }
+
+    if (!$githubUrlExists) {
+        echo "Adding github_url column to projects table...\n";
+        $pdo->exec("ALTER TABLE projects ADD COLUMN github_url TEXT");
+        echo "github_url column added successfully!\n";
+    } else {
+        echo "github_url column already exists in projects table.\n";
+    }
+} catch (PDOException $e) {
+    echo "Error updating projects table: " . $e->getMessage() . "\n";
+}
+?>
