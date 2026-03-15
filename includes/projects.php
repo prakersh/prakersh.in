@@ -152,6 +152,12 @@ function formatCount($num) {
             </div>
             <?php endif; ?>
 
+            <?php if (!empty($githubUrl)): ?>
+            <div class="project-card__github-print">
+                <i class="fab fa-github"></i> <?php echo htmlspecialchars(preg_replace('#^https?://#', '', $githubUrl)); ?>
+            </div>
+            <?php endif; ?>
+
             <div class="project-card__footer">
                 <?php if ($githubStats !== null): ?>
                 <div class="project-card__stats">

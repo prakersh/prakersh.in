@@ -1364,6 +1364,10 @@ a.contact-item__value:hover {
     font-size: 1rem;
 }
 
+.project-card__github-print {
+    display: none;
+}
+
 /* ============================================
    ACHIEVEMENTS SECTION
    ============================================ */

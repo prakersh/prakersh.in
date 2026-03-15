@@ -506,6 +506,24 @@
         margin: 0.05cm 0 !important;
     }
 
+    .project-card__footer,
+    .project-card__stats {
+        display: none !important;
+    }
+
+    .project-card__github-print {
+        display: block !important;
+        font-size: 6pt !important;
+        color: #7C9A82 !important;
+        margin-top: 0.05cm !important;
+        line-height: 1.2 !important;
+    }
+
+    .project-card__github-print i {
+        font-size: 6pt !important;
+        margin-right: 0.04cm !important;
+    }
+
     .project-card__tech {
         display: flex !important;
         flex-wrap: wrap !important;
